@@ -1,0 +1,211 @@
+
+> LINE: +++ "b/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml"
+  LINE: +<?xml version="1.0" encoding="ISO-8859-1"?>
+  LINE: +
+> LINE: +<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Comunica��o aos �rg�os de Estat�stica Pol">
+  LINE: +    <description><![CDATA[
+  LINE: +        cdFLuxo: CR-FCOEP
+> LINE: +        nmFluxo: Comunica��o aos �rg�os de Estat�stica Pol
+  LINE: +
+  LINE: +        Variaveis esperadas: {
+  LINE: +            pje:qtdDocumentos:instanciar - Usada para instanciar diretamente numero de expedientes desejados
+  LINE: +        }]]></description>
+  LINE: +    <!-- SWIMLANES -->
+  LINE: +    <swimlane name="Secretaria">
+  LINE: +        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('4:1469,111074:5967,111075:5968,111120:5970,111119:1469,6:1338,6:5483,5:1338,5:5483')}" actor-id="#{actor.id}"/>
+  LINE: +    </swimlane>
+  LINE: +    <!-- START-STATE -->
+  LINE: +    <start-state name="In�cio">
+  LINE: +        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+  LINE: +        <transition to="Instanciamento oriundo do Execu��o de expedientes pos transito?" name="Instanciamento oriundo do Execu��o de expedientes pos transito?"/>
+  LINE: +    </start-state>
+  LINE: +    <!-- NODES -->
+  LINE: +    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('pje:qtdDocumentos:instanciar') ? 'Sim' : 'N�o'}" name="Instanciamento oriundo do Execu��o de expedientes pos transito?">
+  LINE: +        <transition to="Quantidade informada � maior que zero?" name="Sim">
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', tramitacaoProcessualService.recuperaVariavel('pje:qtdDocumentos:instanciar'))}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:cr-fcoep:transicao:saida', 'Expedir documentos')}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:qtdDocumentos:instanciar')}"/>
+  LINE: +        </transition>
+  LINE: +        <transition to="A transi��o de sa�da para expedi��o foi setada?" name="N�o"/>
+  LINE: +    </decision>
+  LINE: +    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('pje:cr-fcoep:transicao:saida') ? tramitacaoProcessualService.recuperaVariavel('pje:cr-fcoep:transicao:saida') : 'N�o'}" name="A transi��o de sa�da para expedi��o foi setada?">
+  LINE: +        <transition to="Este fluxo ja esta instanciado?" name="N�o"/>
+> LINE: +        <transition to="[Sec] - Expediente - REALIZAR COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAIS" name="Expedir documentos"/>
+  LINE: +    </decision>
+> LINE: +    <decision expression="#{processoHome.retornaTasks(tramitacaoProcessualService.recuperaProcesso().processo).{ti|ti.isOpen() and !ti.isCancelled() and !ti.isSuspended() ? ti.processInstance.processDefinition.name : ''}.contains('Comunica��o aos �rg�os de Estat�stica Pol') ? 'Sim' : 'N�o'}" name="Este fluxo ja esta instanciado?">
+  LINE: +        <transition to="T�rmino" name="Sim"/>
+> LINE: +        <transition to="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POL." name="N�o"/>
+  LINE: +    </decision>
+> LINE: +    <task-node end-tasks="true" name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POL.">
+> LINE: +        <task name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POL." swimlane="Secretaria" priority="3">
+  LINE: +            <controller>
+  LINE: +                <variable name="qtdDocumentos" mapped-name="number:qtdDocumentos" access="read,write"/>
+  LINE: +            </controller>
+  LINE: +        </task>
+  LINE: +        <description><![CDATA[
+  LINE: +            Vari�vel: qtdDocumentos
+  LINE: +            Label: Quantidade de mandados a serem expedidos
+  LINE: +            Tipo: Num�rico
+  LINE: +        ]]></description>
+  LINE: +        <transition to="Iniciar fluxo de an�lise de secretaria" name="Cancelar elabora��o de documento"/>
+  LINE: +        <transition to="Quantidade informada � maior que zero?" name="Expedir documentos"/>
+  LINE: +        <event type="node-enter">
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', 1)}"/>
+  LINE: +        </event>
+  LINE: +    </task-node>
+  LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') &gt; 0 ? 'Sim' : 'N�o'}" name="Quantidade informada � maior que zero?">
+  LINE: +        <transition to="Instanciar CR-FCOEP" name="Sim"/>
+> LINE: +        <transition to="[Sec] - Expediente - REALIZAR COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAIS" name="N�o"/>
+  LINE: +    </decision>
+  LINE: +    <node name="Instanciar CR-FCOEP">
+  LINE: +        <transition to="Quantidade maior que zero ap�s instanciamento?" name="Quantidade maior que zero ap�s instanciamento?"/>
+  LINE: +        <event type="node-leave">
+  LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'CR-FCOEP', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+  LINE: +        </event>
+  LINE: +        <event type="node-enter">
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') - 1)}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:cr-fcoep:transicao:saida', 'Expedir documentos')}"/>
+  LINE: +        </event>
+  LINE: +    </node>
+  LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') &gt; 0 ? 'Sim' : 'N�o'}" name="Quantidade maior que zero ap�s instanciamento?">
+  LINE: +        <transition to="T�rmino" name="N�o">
+  LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:cr-fcoep:transicao:saida')}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('qtdDocumentos')}"/>
+  LINE: +        </transition>
+  LINE: +        <transition to="Instanciar CR-FCOEP" name="Sim"/>
+  LINE: +    </decision>
+> LINE: +    <task-node end-tasks="true" name="[Sec] - Expediente - REALIZAR COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAIS">
+> LINE: +        <task name="[Sec] - Expediente - REALIZAR COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAIS" swimlane="Secretaria" priority="3">
+  LINE: +            <controller>
+  LINE: +                <variable name="avsIntimarPoliciaCivil" mapped-name="textMessage:avsIntimarPoliciaCivil" access="read,write"/>
+  LINE: +                <variable name="intimarPoliciaCivil" mapped-name="sim_nao:intimarPoliciaCivil" access="read,write"/>
+  LINE: +                <variable name="minutaEmElaboracao" mapped-name="textEditAndAttachmentSignature:minutaEmElaboracao" access="read,write"/>
+  LINE: +                <variable name="miniPac" mapped-name="miniPAC:miniPac" access="read,write"/>
+  LINE: +                <variable name="minutarEmLote" mapped-name="minutarLote:minutarEmLote" access="read"/>
+  LINE: +            </controller>
+  LINE: +        </task>
+  LINE: +        <description><![CDATA[
+  LINE: +            Vari�vel: avsIntimarPoliciaCivil
+  LINE: +            Label: Ao marcar o check box relativo ao Departamento de Tecnologia da Informa��o e Comunica��o da Pol�cia Civil do Estado do Cear�, ser� lan�ada a intima��o autom�tica deste, sem preju�zo do uso do Minipac para intima��es a outros destinat�rios
+  LINE: +            Tipo: Aviso Customizado
+  LINE: +
+  LINE: +            Vari�vel: intimarPoliciaCivil
+  LINE: +            Label: Intimar Departamento de Tecnologia da Informa��o e Comunica��o da Pol�cia Civil do Estado do Cear�
+  LINE: +            Tipo: Checkbox
+  LINE: +        ]]></description>
+  LINE: +        <transition to="O minipac foi preenchido?" name="Concluir">
+  LINE: +            <condition expression="#{true}"/>
+  LINE: +        </transition>
+  LINE: +        <transition to="Iniciar fluxo de an�lise de secretaria" name="Cancelar expedi��o do documento"/>
+  LINE: +        <event type="task-create">
+  LINE: +            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Concluir')}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','67,34')}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('prepararAto:meiosComunicacoes', 'E')}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos','Cancelar expedi��o do documento')}"/>
+  LINE: +        </event>
+  LINE: +    </task-node>
+  LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:miniPac:existente') ? 'Sim' : 'N�o'}" name="O minipac foi preenchido?">
+  LINE: +        <transition to="Iniciar fluxo de Controle de Envio de Ato de Comunica��o" name="Sim"/>
+  LINE: +        <transition to="Intimar a policia?" name="N�o"/>
+  LINE: +    </decision>
+  LINE: +    <!-- Envia o expediente para as partes selecionadas no minipac -->
+  LINE: +    <node name="Iniciar fluxo de Controle de Envio de Ato de Comunica��o">
+  LINE: +        <transition to="Intimar a policia?" name="Intimar a policia?"/>
+  LINE: +        <event type="node-leave">
+  LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-FCEAC', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables ,tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+  LINE: +        </event>
+  LINE: +    </node>
+  LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('intimarPoliciaCivil') ? 'Sim' : 'N�o'}" name="Intimar a policia?">
+  LINE: +        <transition to="Iniciar fluxo de intima��o autom�tica padr�o" name="Sim"/>
+  LINE: +        <transition to="Lan�ar movimenta��o" name="N�o"/>
+  LINE: +    </decision>
+  LINE: +    <!-- Envia o expediente para a Policia Civil -->
+  LINE: +    <node name="Iniciar fluxo de intima��o autom�tica padr�o">
+  LINE: +        <transition to="Lan�ar movimenta��o" name="Lan�ar movimenta��o"/>
+  LINE: +        <event type="node-leave">
+  LINE: +            <action expression="{preencherMovimento.deCodigo(12265).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).lancarMovimento()}"/>
+  LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-INAUPA', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+  LINE: +        </event>
+  LINE: +        <event type="node-enter">
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:destinatario', parametroUtil.getParametro('pje:tjce:expediente:destinatario:id:destinatarioCOTIC'))}"/>
+  LINE: +            <!-- Sem prazo -->
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:diaMesAno', 'S' )}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:quantidadeTempo', null)}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:passaDocumentoJuntado', true )}"/>
+  LINE: +        </event>
+  LINE: +    </node>
+  LINE: +    <node name="Lan�ar movimenta��o">
+  LINE: +        <transition to="Iniciar fluxo de conferencia pos transito" name="Iniciar fluxo de conferencia pos transito"/>
+  LINE: +        <event type="node-enter">
+  LINE: +            <action expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado')).getTipoProcessoDocumento().getCodigoDocumento().equals(parametroUtil.getParametro('pje:tjce:fluxo:codDocAtoOrdinatorio')) ? preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).lancarMovimento() : preencherMovimento.deCodigo(60).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(79).lancarMovimento()}"/>
+  LINE: +        </event>
+  LINE: +    </node>
+  LINE: +    <node name="Iniciar fluxo de conferencia pos transito">
+  LINE: +        <transition to="T�rmino" name="T�rmino"/>
+  LINE: +        <event type="node-leave">
+  LINE: +            <action expression="#{processInstanceUtil.getVariables().{e | e.getKey() != 'pje:tjce:fluxo:idsExpedientesGerais' and e.getKey() != 'pje:tjce:fluxo:idsExpedientesRecurso' and e.getKey() != 'pje:tjce:fluxo:fluxoSaida' and e.getKey() != 'pje:fluxo:temporizador:dataAguardar' and e.getKey() != 'processo' and e.getKey() != 'pje:atoProferido' and e.getKey() != 'pje:fluxo:ultimoDocumentoJuntado' and e.getKey() != 'idOrgaoJulgadorCumprimento' and e.getKey() != 'idOrgaoJulgadorColegiadoCumprimento' and e.getKey() != 'idOrgaoJulgadorCargoCumprimento' and e.getKey() != 'idLocalizacaoCumprimento' and e.getKey() != 'minutaEmElaboracao' ? tramitacaoProcessualService.apagaVariavel(e.getKey()) : ''}.contains('')}"/>
+  LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'CR-CEPT', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+  LINE: +        </event>
+  LINE: +    </node>
+  LINE: +    <node name="Iniciar fluxo de an�lise de secretaria">
+  LINE: +        <transition to="T�rmino" name="T�rmino"/>
+  LINE: +        <event type="node-leave">
+  LINE: +            <action expression="#{processInstanceUtil.getVariables().{e | e.getKey() != 'pje:tjce:fluxo:idsExpedientesGerais' and e.getKey() != 'pje:tjce:fluxo:idsExpedientesRecurso' and e.getKey() != 'pje:tjce:fluxo:fluxoSaida' and e.getKey() != 'pje:fluxo:temporizador:dataAguardar' and e.getKey() != 'processo' and e.getKey() != 'pje:atoProferido' and e.getKey() != 'pje:fluxo:ultimoDocumentoJuntado' and e.getKey() != 'idOrgaoJulgadorCumprimento' and e.getKey() != 'idOrgaoJulgadorColegiadoCumprimento' and e.getKey() != 'idOrgaoJulgadorCargoCumprimento' and e.getKey() != 'idLocalizacaoCumprimento' and e.getKey() != 'minutaEmElaboracao' ? tramitacaoProcessualService.apagaVariavel(e.getKey()) : ''}.contains('')}"/>
+  LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-FVPS', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+  LINE: +        </event>
+  LINE: +        <event type="node-enter">
+  LINE: +            <action expression="#{empty tramitacaoProcessualService.recuperaVariavel('pje:tjce:fluxo:fluxoSaida') ? tramitacaoProcessualService.gravaVariavel('pje:tjce:fluxo:fluxoSaida', parametroUtil.getParametro('pje:tjce:fluxo:fluxoSaidaPadrao')) : ''}"/>
+  LINE: +        </event>
+  LINE: +    </node>
+  LINE: +    <end-state name="T�rmino"/>
+  LINE: +    <!-- PROCESS-EVENTS -->
+  LINE: +    <event type="superstate-enter">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="process-start">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="before-signal">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="task-end">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="task-create">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="subprocess-created">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="task-assign">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="transition">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="after-signal">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="timer">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="task-start">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="subprocess-end">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="process-end">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="node-leave">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="superstate-leave">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +    <event type="node-enter">
+  LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  LINE: +    </event>
+  LINE: +</process-definition>
+

@@ -1,0 +1,384 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< br.com.analyzer:git-commit-analyzer >-----------------
+[INFO] Building git-commit-analyzer 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ git-commit-analyzer ---
+[WARNING] Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory C:\ambiente\ambiente_tjce\spaces\workspace_legacy\github\git-commit-analyzer-java8\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ git-commit-analyzer ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- exec-maven-plugin:3.0.0:java (default-cli) @ git-commit-analyzer ---
+----------------------------------------- Processamento de Fluxos -----------------------------------------------
+Mensagem: [#166992] Ajustes em visibilidade da presidência
+Commit: 8bdf1ac517844bee645db988f7915b7b047e6a53 - Data do commit: 27-02-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Total de Itens do Commit: 2
+
+
+
+Mensagem: [#244548] Ajustes na variável de saída e sua validações
+Commit: 74fa7d47cc0f91a8df16b835b61893483f40d6e0 - Data do commit: 26-02-2026
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento VDOC.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Criminal/Protocolo de Processos de Juízo de Conhecimento.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 3
+
+
+
+Mensagem: [#244548] Ajustes na variável de saída e sua validações
+Commit: 313bf8ce513691cf0595868743c4aaf47ecca6c2 - Data do commit: 26-02-2026
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento VDOC.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Criminal/Protocolo de Processos de Juízo de Conhecimento.xml -> 
+    XML {<action=7}
+    TOTAL: 7
+  Total de Itens do Commit: 9
+
+
+
+Mensagem: Merge branch 'revert-6d168137' into 'ambientes/projeto-hml-2609'
+Commit: 6ce520349fa94e27ddd079f862c6dee2a7757d7d - Data do commit: 26-02-2026
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento VDOC.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Criminal/Protocolo de Processos de Juízo de Conhecimento.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 3
+
+
+
+Mensagem: Revert "[#244548] Ajustes na variável de saída e sua validações"
+Commit: af394f6a6776884ac3e7c20282da600cfbdd7a6f - Data do commit: 26-02-2026
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento VDOC.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Criminal/Protocolo de Processos de Juízo de Conhecimento.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 3
+
+
+
+Mensagem: [#244548] Ajustes na variável de saída e sua validações
+Commit: 6d16813753f3e46bd3f9b4a7957ec4314d8647e8 - Data do commit: 26-02-2026
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento VDOC.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Criminal/Protocolo de Processos de Juízo de Conhecimento.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 3
+
+
+
+Mensagem: [#244548] Ajustes na criação de variáveis para resolver bug do jbpm
+Commit: 3862d818df6ad64f2974132937feb04cbba5e4fa - Data do commit: 26-02-2026
+  Fluxos/1o Grau/Criminal/Protocolo de Processos de Juízo de Conhecimento.xml -> 
+    XML {<action=6}
+    TOTAL: 6
+  Total de Itens do Commit: 6
+
+
+
+Mensagem: [#166992] Ajustes nas mensagens e labels do fluxo
+Commit: a8acb17c9b107b0adcd9e8fb51a51713f8adb725 - Data do commit: 25-02-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<transition=1, <action=2}
+    TOTAL: 3
+  Total de Itens do Commit: 3
+
+
+
+Mensagem: [#166992] Revisão de visibilidade na preparação do alvará
+Commit: dcd87c5bbcf22f4105975474bed14319f1d18b4a - Data do commit: 24-02-2026
+  Fluxos/2o Grau/Precatórios/Preparação de Expedição de Alvará de Precatório - BANKJUS.xml -> 
+    XML {<swimlane=1, <task name=1}
+    TOTAL: 2
+  Total de Itens do Commit: 2
+
+
+
+Mensagem: [#244087] Ajuste na nomenclatura das tarefas
+Commit: f12bfbe1e637f29dde9fb0da66dada692080c3fd - Data do commit: 24-02-2026
+  Fluxos/1o Grau/Criminal/Análise de Ato Judicial Proferido - Medidas Protetivas de Urgência.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Total de Itens do Commit: 2
+
+
+
+Mensagem: [#255428] Ajustes na distribuição para na competência do Juizado de Violência Doméstica e Familiar Contra a Mulher - Cível
+Commit: 8c6955feb5e0a100ba2e2d1c687ddfbef7086e79 - Data do commit: 23-02-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=3, <action=2, <decision=1, <node=1}
+    TOTAL: 7
+  Total de Itens do Commit: 7
+
+
+
+Mensagem: [#255428] Ajustes na distribuição para na competência do Juizado de Violência Doméstica e Familiar Contra a Mulher - Cível
+Commit: dad8911fb2912e0da216791bcda8f6063266d6b0 - Data do commit: 19-02-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=3, <action=2, <decision=1, <node=1}
+    TOTAL: 7
+  Total de Itens do Commit: 7
+
+
+
+Mensagem: [#166992] ajustes em bugs e revisão de visibilidade
+Commit: 91c8d3189704ee2e444cadf834f5edf62f898f7c - Data do commit: 23-02-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<transition=2, <action=2, <decision=1}
+    TOTAL: 5
+  Total de Itens do Commit: 5
+
+
+
+Mensagem: [#166992] retirada de nós desnecessários
+Commit: f278f2b215991b246bfee1eee613d3d4d419ba12 - Data do commit: 19-02-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<condition=2, <transition=3, <action=1}
+    TOTAL: 6
+  Total de Itens do Commit: 6
+
+
+
+Mensagem: [#166992] revisão geral do fluxo
+Commit: 68b6465e6f169f9ad952ffebfc778fc67b2ac72c - Data do commit: 18-02-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<condition=1, <transition=11, <task-node=1, <action=4, <decision=1, <task name=1}
+    TOTAL: 19
+  Total de Itens do Commit: 19
+
+
+
+Mensagem: [#166992] [item 194] Adaptações a nova realidade do fluxo
+Commit: 24dd07e6ab298c85f16e2a8a31cab409d441eabe - Data do commit: 13-02-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<condition=4, <transition=5, <swimlane=1, <action=5, <decision=1}
+    TOTAL: 16
+  Total de Itens do Commit: 16
+
+
+
+Mensagem: [#246617] Adição de novos labels
+Commit: c7f35c2d4907dd1f7c49ed14522d2703c0031b12 - Data do commit: 13-02-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: Merge branch 'feature/#166992_expedicao_alvara_eletronico_integracao_bankjus' into ambientes/projeto-hml-2609
+Commit: ea744e255a2837fc38cd0f0aef0a9df3da112666 - Data do commit: 11-02-2026
+  Fluxos/2o Grau/Precatórios/Análise da Assessoria de Precatórios.xml -> 
+    XML {<transition=2, <variable=1, <action=3, <node=1}
+    TOTAL: 7
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<condition=7, <transition=46, <task-node=7, <swimlane=4, <variable=13, <action=36, <description=6, <decision=5, <task name=8, <node=2}
+    TOTAL: 134
+  Fluxos/2o Grau/Precatórios/Preparação de Expedição de Alvará de Precatório - BANKJUS.xml -> 
+    XML {<condition=1, <transition=12, <task-node=2, <swimlane=3, <variable=2, <action=7, <description=2, <decision=2, <task name=3, <node=2}
+    TOTAL: 36
+  Total de Itens do Commit: 177
+
+
+
+Mensagem: Merge branch 'features/#238906_expansao_bloco_1.2_crime_comum_e_juizo_conhecimento' into ambientes/projeto-hml-2609
+Commit: 7e67f32ef2bb64e675e19e2f0f99d88679c33f8c - Data do commit: 11-02-2026
+  Fluxos/1o Grau/Criminal/Comunicação aos Órgãos de Estatística Pol.xml -> 
+    XML {<condition=1, <transition=25, <task-node=2, <swimlane=1, <variable=6, <action=26, <description=3, <decision=7, <task name=3, <node=6}
+    TOTAL: 80
+  Fluxos/1o Grau/Criminal/Destinação de Provas Bélicas.xml -> 
+    XML {<transition=21, <task-node=1, <action=3, <decision=7, <task name=1, <node=5}
+    TOTAL: 38
+  Total de Itens do Commit: 118
+
+
+
+Mensagem: [#252076] [ITEM 34]  Correção de label no fluxo do Bankjus
+Commit: 4dba08a07d17864cccb35827e98a1e5216bdbac4 - Data do commit: 10-02-2026
+  Fluxos/2o Grau/Precatórios/Preparação de Expedição de Alvará de Precatório - BANKJUS.xml -> 
+    XML {<transition=1, <action=1}
+    TOTAL: 2
+  Total de Itens do Commit: 2
+
+
+
+----------------------------------------- Processamento de Scripts -----------------------------------------------
+Mensagem: [#166992] Ajustes em visibilidade da presidência
+Commit: 8bdf1ac517844bee645db988f7915b7b047e6a53 - Data do commit: 27-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#244548] Ajustes na variável de saída e sua validações
+Commit: 74fa7d47cc0f91a8df16b835b61893483f40d6e0 - Data do commit: 26-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#244548] Ajustes na variável de saída e sua validações
+Commit: 313bf8ce513691cf0595868743c4aaf47ecca6c2 - Data do commit: 26-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: Merge branch 'revert-6d168137' into 'ambientes/projeto-hml-2609'
+Commit: 6ce520349fa94e27ddd079f862c6dee2a7757d7d - Data do commit: 26-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: Revert "[#244548] Ajustes na variável de saída e sua validações"
+Commit: af394f6a6776884ac3e7c20282da600cfbdd7a6f - Data do commit: 26-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#244548] Ajustes na variável de saída e sua validações
+Commit: 6d16813753f3e46bd3f9b4a7957ec4314d8647e8 - Data do commit: 26-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#244548] Ajustes na criação de variáveis para resolver bug do jbpm
+Commit: 3862d818df6ad64f2974132937feb04cbba5e4fa - Data do commit: 26-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#166992] Ajustes nas mensagens e labels do fluxo
+Commit: a8acb17c9b107b0adcd9e8fb51a51713f8adb725 - Data do commit: 25-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#166992] Revisão de visibilidade na preparação do alvará
+Commit: dcd87c5bbcf22f4105975474bed14319f1d18b4a - Data do commit: 24-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#244087] Ajuste na nomenclatura das tarefas
+Commit: f12bfbe1e637f29dde9fb0da66dada692080c3fd - Data do commit: 24-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255428] Ajustes na distribuição para na competência do Juizado de Violência Doméstica e Familiar Contra a Mulher - Cível
+Commit: 8c6955feb5e0a100ba2e2d1c687ddfbef7086e79 - Data do commit: 23-02-2026
+  Scripts/2026/255428/PJE_FLX_ANT_001_1G_255428_cria_parametros.sql -> SQL { INSERT=[core.tb_parametro] UPDATE=[core.tb_parametro] IF=[] }
+  Scripts/2026/255428/PJE_FLX_ANT_VALIDACAO_001_1G_255428_cria_parametros.sql -> SQL { INSERT=[] UPDATE=[] IF=[] }
+  Total de Itens do Commit: 7
+
+
+
+Mensagem: [#255428] Ajustes na distribuição para na competência do Juizado de Violência Doméstica e Familiar Contra a Mulher - Cível
+Commit: dad8911fb2912e0da216791bcda8f6063266d6b0 - Data do commit: 19-02-2026
+  Scripts/2026/255428/PJE_FLX_ANT_001_1G_255428_cria_parametros.sql -> SQL { INSERT=[core.tb_parametro] UPDATE=[core.tb_parametro] IF=[] }
+  Scripts/2026/255428/PJE_FLX_ANT_VALIDACAO_001_1G_255428_cria_parametros.sql -> SQL { INSERT=[] UPDATE=[] IF=[] }
+  Total de Itens do Commit: 7
+
+
+
+Mensagem: [#166992] ajustes em bugs e revisão de visibilidade
+Commit: 91c8d3189704ee2e444cadf834f5edf62f898f7c - Data do commit: 23-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#166992] retirada de nós desnecessários
+Commit: f278f2b215991b246bfee1eee613d3d4d419ba12 - Data do commit: 19-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#166992] revisão geral do fluxo
+Commit: 68b6465e6f169f9ad952ffebfc778fc67b2ac72c - Data do commit: 18-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#166992] [item 194] Adaptações a nova realidade do fluxo
+Commit: 24dd07e6ab298c85f16e2a8a31cab409d441eabe - Data do commit: 13-02-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#246617] Adição de novos labels
+Commit: c7f35c2d4907dd1f7c49ed14522d2703c0031b12 - Data do commit: 13-02-2026
+  Scripts/2025/246617/PJE_FLX_ANT_001_2G_246617_criar_labels.sql -> SQL { INSERT=[core.tb_jbpm_variavel_label] UPDATE=[core.tb_jbpm_variavel_label] IF=[] }
+  Scripts/2025/246617/PJE_FLX_ANT_VALIDACAO_001_2G_246617_criar_labels.sql -> SQL { INSERT=[] UPDATE=[] IF=[] }
+  Total de Itens do Commit: 0
+
+
+
+Mensagem: Merge branch 'feature/#166992_expedicao_alvara_eletronico_integracao_bankjus' into ambientes/projeto-hml-2609
+Commit: ea744e255a2837fc38cd0f0aef0a9df3da112666 - Data do commit: 11-02-2026
+  Scripts/2024/166992/PJE_FLX_ANT_001_2G_166992_criar_labels_alterar_parametros_expedir_alvara_bankjus.sql -> SQL { INSERT=[core.tb_jbpm_variavel_label, tb_modelo_doc_proc_local, tb_modelo_documento] UPDATE=[core.tb_jbpm_variavel_label, core.tb_parametro] IF=[] }
+  Scripts/2024/166992/PJE_FLX_VALIDACAO_ANT_001_2G_166922_criar_labels_alterar_parametros_expedir_alvara_bankjus.sql -> SQL { INSERT=[] UPDATE=[] IF=[] }
+  Total de Itens do Commit: 177
+
+
+
+Mensagem: Merge branch 'features/#238906_expansao_bloco_1.2_crime_comum_e_juizo_conhecimento' into ambientes/projeto-hml-2609
+Commit: 7e67f32ef2bb64e675e19e2f0f99d88679c33f8c - Data do commit: 11-02-2026
+  Scripts/2025/240827/PJE_FLX_ANT_001_1G_240827_atualiza_labels_e_parametros.sql -> SQL { INSERT=[] UPDATE=[core.tb_parametro] IF=[] }
+  Scripts/2025/240827/PJE_FLX_ANT_VALIDACAO_001_1G_240827_atualiza_labels_e_parametros.sql -> SQL { INSERT=[] UPDATE=[] IF=[] }
+  Total de Itens do Commit: 118
+
+
+
+Mensagem: [#252076] [ITEM 34]  Correção de label no fluxo do Bankjus
+Commit: 4dba08a07d17864cccb35827e98a1e5216bdbac4 - Data do commit: 10-02-2026
+  Scripts/2024/166992/PJE_FLX_ANT_001_2G_166992_criar_labels_alterar_parametros_expedir_alvara_bankjus.sql -> SQL { INSERT=[] UPDATE=[] IF=[] }
+  Total de Itens do Commit: 2
+
+
+
+[WARNING] thread Thread[JGit-FileStoreAttributeReader-1,5,br.com.analyzer.Main] was interrupted but is still alive after waiting at least 15000msecs
+[WARNING] thread Thread[JGit-FileStoreAttributeReader-1,5,br.com.analyzer.Main] will linger despite being asked to die via interruption
+[WARNING] thread Thread[JGit-WorkQueue,5,br.com.analyzer.Main] will linger despite being asked to die via interruption
+[WARNING] NOTE: 2 thread(s) did not finish despite being asked to  via interruption. This is not a problem with exec:java, it is a problem with the running code. Although not serious, it should be remedied.
+[WARNING] Couldn't destroy threadgroup org.codehaus.mojo.exec.ExecJavaMojo$IsolatedThreadGroup[name=br.com.analyzer.Main,maxpri=10]
+java.lang.IllegalThreadStateException
+    at java.lang.ThreadGroup.destroy (ThreadGroup.java:778)
+    at org.codehaus.mojo.exec.ExecJavaMojo.execute (ExecJavaMojo.java:293)
+    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:137)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:210)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:156)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:148)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:117)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:81)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:56)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:128)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:305)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:192)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:105)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:957)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:289)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:193)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:498)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:282)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:225)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:406)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:347)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  16.313 s
+[INFO] Finished at: 2026-03-11T17:09:21-03:00
+[INFO] ------------------------------------------------------------------------

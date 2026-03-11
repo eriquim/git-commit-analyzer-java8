@@ -85,8 +85,12 @@ public class GitCommitExtractor {
                         .setNewTree(newTree)
                         .call();
 
-                for (DiffEntry d : diffs) {
+                org.eclipse.jgit.diff.RenameDetector rd = new org.eclipse.jgit.diff.RenameDetector(repo);
+                rd.addAll(diffs);
+                diffs = rd.compute();
 
+                for (DiffEntry d : diffs) {
+                    
                     String path = d.getNewPath();
                     String ext = getExt(path);
 
@@ -101,7 +105,7 @@ public class GitCommitExtractor {
                     String diffText = out.toString("ISO-8859-1");
                     formatter.close();
                     
-                    String resultado = DiffProcessor.processar(diffText, ext, xmlTags, commit);
+                    String resultado = DiffProcessor.processar(diffText, ext, xmlTags, commit, path);
 
                     ArquivoCommit arq = new ArquivoCommit(
                             arqSeq++,

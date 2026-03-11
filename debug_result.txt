@@ -1,0 +1,204 @@
+
+> ========== DIF ENTRIES ANTES DO RENAME DETECTOR ==========
+  MODIFY .DS_Store -> .DS_Store
+  MODIFY .gitignore -> .gitignore
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Analise de Secretaria - Nucleo de Custodia e Garantias.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Ato Judicial Proferido - Medidas Protetivas de Urg�ncia.xml
+  MODIFY Fluxos/1o Grau/Criminal/An�lise de Secretaria - Crime Comum.xml -> Fluxos/1o Grau/Criminal/An�lise de Secretaria - Crime Comum.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Secretaria - VDOC.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Secretaria - Viol�ncia Dom�stica.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Secretaria Medida Protetiva de Urg�ncia.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Triagem Inicial - Ju�zo das Garantias.xml
+  MODIFY Fluxos/1o Grau/Criminal/Certifica��o de Antecedentes Penais.xml -> Fluxos/1o Grau/Criminal/Certifica��o de Antecedentes Penais.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Controle de Mandados Enviados MPU.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Controle de Prazo de Pris�o.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Controle de Prazo de Rean�lise de Medida Protetiva.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Controle de prazo diverso.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Designa��o de Audi�ncia Criminal.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Distribui��o por classe - Cust�dia e Ju�zo das Garantias.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Expedi��o de Mandado MPU.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Opera��o de Audi�ncia Criminal.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Prepara��o Padr�o de Ato Judicial Criminal de Urg�ncia.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Prepara��o Padr�o de Ato Judicial M�ltiplas Assinaturas.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Prepara��o de Audi�ncias de Custodia.xml
+  MODIFY Fluxos/1o Grau/Criminal/Prepara��o de Intima��o autom�tica ao MP.xml -> Fluxos/1o Grau/Criminal/Prepara��o de Intima��o autom�tica ao MP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Protocolo Processos Viol�ncia Dom�stica.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Realiza��o de Audi�ncia Criminal.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Acordo de N�o-Persecu��o Penal.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Den�ncia.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Manifesta��o AP-MP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Manifesta��o MP-AP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Manifesta��o da AP para o Ju�zo.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Manifesta��o do MP para o Ju�zo.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Promo��o MP Pedido de Arquivamento.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Tramita��o Direta entre MP e AP.xml
+  MODIFY Fluxos/1o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml -> Fluxos/1o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml
+  MODIFY Fluxos/1o Grau/Execu��o Fiscal/[EF] Expediente padr�o de comunicacao.xml -> Fluxos/1o Grau/Execu��o Fiscal/[EF] Expediente padr�o de comunicacao.xml
+  MODIFY Fluxos/1o Grau/Execu��o Fiscal/[EF] Fluxo de sobrestamento.xml -> Fluxos/1o Grau/Execu��o Fiscal/[EF] Fluxo de sobrestamento.xml
+  MODIFY Fluxos/1o Grau/Execu��o Fiscal/[EF] Prepara��o de atos judiciais - Gabinete.xml -> Fluxos/1o Grau/Execu��o Fiscal/[EF] Prepara��o de atos judiciais - Gabinete.xml
+  MODIFY Fluxos/1o Grau/Fam�lia/An�lise de Secretaria - Fam�lia.xml -> Fluxos/1o Grau/Fam�lia/An�lise de Secretaria - Fam�lia.xml
+  MODIFY Fluxos/1o Grau/Fam�lia/Elabora��o de estudo psicologico.xml -> Fluxos/1o Grau/Fam�lia/Elabora��o de estudo psicologico.xml
+  MODIFY Fluxos/1o Grau/Fam�lia/Elabora��o de estudo social.xml -> Fluxos/1o Grau/Fam�lia/Elabora��o de estudo social.xml
+  MODIFY Fluxos/1o Grau/Geral/Aguardo para Inf�ncia e Juventude - Coordenadoria.xml -> Fluxos/1o Grau/Geral/Aguardo para Inf�ncia e Juventude - Coordenadoria.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise da Manifesta��o do MP.xml -> Fluxos/1o Grau/Geral/An�lise da Manifesta��o do MP.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Documentos N�o Lidos.xml -> Fluxos/1o Grau/Geral/An�lise de Documentos N�o Lidos.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Secretaria - Empresarial e Recupera��o de Empresas e Fal�ncia.xml -> Fluxos/1o Grau/Geral/An�lise de Secretaria - Empresarial e Recupera��o de Empresas e Fal�ncia.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Secretaria - Habeas Corpus.xml -> Fluxos/1o Grau/Geral/An�lise de Secretaria - Habeas Corpus.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Secretaria - Impedimento e Suspei��o.xml -> Fluxos/1o Grau/Geral/An�lise de Secretaria - Impedimento e Suspei��o.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Secretaria.xml -> Fluxos/1o Grau/Geral/An�lise de Secretaria.xml
+  MODIFY Fluxos/1o Grau/Geral/Controle de Envio de Ato de Comunica��o.xml -> Fluxos/1o Grau/Geral/Controle de Envio de Ato de Comunica��o.xml
+  MODIFY Fluxos/1o Grau/Geral/Controle de Prazo Processual.xml -> Fluxos/1o Grau/Geral/Controle de Prazo Processual.xml
+  MODIFY Fluxos/1o Grau/Geral/Distribui��o por Compet�ncia.xml -> Fluxos/1o Grau/Geral/Distribui��o por Compet�ncia.xml
+  MODIFY Fluxos/1o Grau/Geral/Encaminhamento para SEJUD 1G.xml -> Fluxos/1o Grau/Geral/Encaminhamento para SEJUD 1G.xml
+  MODIFY Fluxos/1o Grau/Geral/Expedi��o de Alvar� Eletr�nico.xml -> Fluxos/1o Grau/Geral/Expedi��o de Alvar� Eletr�nico.xml
+  MODIFY Fluxos/1o Grau/Geral/Intima��o Autom�tica Padr�o.xml -> Fluxos/1o Grau/Geral/Intima��o Autom�tica Padr�o.xml
+  MODIFY Fluxos/1o Grau/Geral/Opera��o de Audi�ncia.xml -> Fluxos/1o Grau/Geral/Opera��o de Audi�ncia.xml
+  MODIFY Fluxos/1o Grau/Geral/PAC - Intima��o de Audi�ncia.xml -> Fluxos/1o Grau/Geral/PAC - Intima��o de Audi�ncia.xml
+  MODIFY Fluxos/1o Grau/Geral/Prepara��o de intima��o autom�tica � DP.xml -> Fluxos/1o Grau/Geral/Prepara��o de intima��o autom�tica � DP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Geral/Vista Autom�tica a AP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Geral/Vista Autom�tica ao MP.xml
+  MODIFY Fluxos/1o Grau/Geral/Vista de Ato Judicial ao MP.xml -> Fluxos/1o Grau/Geral/Vista de Ato Judicial ao MP.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/Aguardo de retorno de estudo t�cnico MVAD.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/Aguardo de retorno de estudo t�cnico MVAD.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/Aguardo para Inf�ncia e Juventude - Se��o de Adotantes.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/Aguardo para Inf�ncia e Juventude - Se��o de Adotantes.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Ato Infracional.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Ato Infracional.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Inf�ncia e Juventude Coordenadoria.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Inf�ncia e Juventude Coordenadoria.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Inf�ncia e Juventude C�vel.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Inf�ncia e Juventude C�vel.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Medidas Socioeducativas.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Medidas Socioeducativas.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Se��o de Cadastro de Adotantes e Adotandos.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Se��o de Cadastro de Adotantes e Adotandos.xml
+  MODIFY Fluxos/1o Grau/Sucess�es/Aguardo de retorno da se��o de partilhas e leil�es.xml -> Fluxos/1o Grau/Sucess�es/Aguardo de retorno da se��o de partilhas e leil�es.xml
+  MODIFY Fluxos/1o Grau/Sucess�es/An�lise de Secretaria - Sucess�es.xml -> Fluxos/1o Grau/Sucess�es/An�lise de Secretaria - Sucess�es.xml
+  MODIFY Fluxos/1o Grau/Sucess�es/Elabora��o de Documento da Se��o de Partilhas e Leil�es.xml -> Fluxos/1o Grau/Sucess�es/Elabora��o de Documento da Se��o de Partilhas e Leil�es.xml
+  MODIFY Fluxos/2o Grau/Aguardo de Inclus�o em Pauta.xml -> Fluxos/2o Grau/Aguardo de Inclus�o em Pauta.xml
+  MODIFY Fluxos/2o Grau/Distribui��o por Compet�ncia.xml -> Fluxos/2o Grau/Distribui��o por Compet�ncia.xml
+  MODIFY Fluxos/2o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml -> Fluxos/2o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml
+  MODIFY Fluxos/2o Grau/Etiquetamento Peti��o.xml -> Fluxos/2o Grau/Etiquetamento Peti��o.xml
+  MODIFY Fluxos/2o Grau/Expedi��o de Alvar� Eletr�nico.xml -> Fluxos/2o Grau/Expedi��o de Alvar� Eletr�nico.xml
+  MODIFY Fluxos/2o Grau/Intima��o F�sica de Pauta de Sess�o.xml -> Fluxos/2o Grau/Intima��o F�sica de Pauta de Sess�o.xml
+  MODIFY Fluxos/2o Grau/PAC - Intima��o de Pauta de Sess�o de Julgamento.xml -> Fluxos/2o Grau/PAC - Intima��o de Pauta de Sess�o de Julgamento.xml
+  MODIFY Fluxos/2o Grau/Prepara��o de Ato Judicial de Despacho Inicial.xml -> Fluxos/2o Grau/Prepara��o de Ato Judicial de Despacho Inicial.xml
+  MODIFY Fluxos/2o Grau/Remessa de Recurso para Tribunal Superior.xml -> Fluxos/2o Grau/Remessa de Recurso para Tribunal Superior.xml
+  ADD /dev/null -> Scripts/2025/233920/PJE_FLX_ANT_001_1G_233920_criacao_de_parametro.sql
+  ADD /dev/null -> Scripts/2025/233920/PJE_FLX_VALIDACAO_ANT_001_1G_233920_criacao_de_parametro.sql
+  ADD /dev/null -> Scripts/2025/233922/PJE_FLX_ANT_001_1G_233922_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql
+  ADD /dev/null -> Scripts/2025/233922/PJE_FLX_ANT_VALIDACAO_001_1G_233922_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql
+  ADD /dev/null -> Scripts/2025/233932/PJE_FLX_ANT_01_233936_CRIA_PARAMETRO_MODELO_DOCUMENTO.sql
+  ADD /dev/null -> Scripts/2025/233932/PJE_FLX_ANT__VALIDACAO_01_233936_CRIA_PARAMETRO_MODELO_DOCUMENTO.sql
+  ADD /dev/null -> Scripts/2025/233934/PJE_FLX_POS_01_1G_233934_ATRIBUIR_LABEL_REALIZACAO_AUDIENCIA.sql
+  ADD /dev/null -> Scripts/2025/233934/PJE_FLX_POS_VALIDACAO_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql
+  ADD /dev/null -> Scripts/2025/233935/PJE_FLX_ANT_001_1G_233935_ATUALIZA_PARAMETRO_MAPAOPCOES.sql
+  ADD /dev/null -> Scripts/2025/233935/PJE_FLX_ANT_VALIDACAO_001_1G_233935_ATUALIZA_PARAMETRO_MAPAOPCOES.sql
+  ADD /dev/null -> Scripts/2025/233936/PJE_FLX_ANT_01_233936_CRIA_PARAMETRO_COM_COD_CLASSES_GARANTIAS.sql
+  ADD /dev/null -> Scripts/2025/233936/PJE_FLX_ANT__VALIDACAO_01_233936_CRIA_PARAMETRO_COM_COD_CLASSES_GARANTIAS.sql
+  ADD /dev/null -> Scripts/2025/233936/PJE_FLX_POS_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql
+  ADD /dev/null -> Scripts/2025/233936/PJE_FLX_POS_VALIDACAO_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql
+  ADD /dev/null -> Scripts/2025/233941/PJE_FLX_ANT_001_1G_2333941_atualiza_label.sql
+  ADD /dev/null -> Scripts/2025/233941/PJE_FLX_ANT_002_1G_233941_incrementa_parametro.sql
+  ADD /dev/null -> Scripts/2025/233941/PJE_FLX_ANT_VALIDACAO_001_1G_233941_atualiza_label.sql
+  ADD /dev/null -> Scripts/2025/233941/PJE_FLX_ANT_VALIDACAO_002_1G_233941_incrementa_parametro.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_001_1G_233944_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_002_1G_233944_INCREMENTA_MAPA_OPCOES.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_004_1G_233944_INCREMENTA_PARAMETRO_VERIFICA_OUTROS_FLUXOS.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_VALIDACAO_001_1G_233944_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_VALIDACAO_001_1G_233944_INCREMENTA_MAPA_OPCOES.sql
+> ========== DIF ENTRIES DEPOIS DO RENAME DETECTOR ==========
+  MODIFY .DS_Store -> .DS_Store
+  MODIFY .gitignore -> .gitignore
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Analise de Secretaria - Nucleo de Custodia e Garantias.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Ato Judicial Proferido - Medidas Protetivas de Urg�ncia.xml
+  MODIFY Fluxos/1o Grau/Criminal/An�lise de Secretaria - Crime Comum.xml -> Fluxos/1o Grau/Criminal/An�lise de Secretaria - Crime Comum.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Secretaria - VDOC.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Secretaria - Viol�ncia Dom�stica.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Secretaria Medida Protetiva de Urg�ncia.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/An�lise de Triagem Inicial - Ju�zo das Garantias.xml
+  MODIFY Fluxos/1o Grau/Criminal/Certifica��o de Antecedentes Penais.xml -> Fluxos/1o Grau/Criminal/Certifica��o de Antecedentes Penais.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Controle de Mandados Enviados MPU.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Controle de Prazo de Pris�o.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Controle de Prazo de Rean�lise de Medida Protetiva.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Controle de prazo diverso.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Designa��o de Audi�ncia Criminal.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Distribui��o por classe - Cust�dia e Ju�zo das Garantias.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Expedi��o de Mandado MPU.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Opera��o de Audi�ncia Criminal.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Prepara��o Padr�o de Ato Judicial Criminal de Urg�ncia.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Prepara��o Padr�o de Ato Judicial M�ltiplas Assinaturas.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Prepara��o de Audi�ncias de Custodia.xml
+  MODIFY Fluxos/1o Grau/Criminal/Prepara��o de Intima��o autom�tica ao MP.xml -> Fluxos/1o Grau/Criminal/Prepara��o de Intima��o autom�tica ao MP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Protocolo Processos Viol�ncia Dom�stica.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Realiza��o de Audi�ncia Criminal.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Acordo de N�o-Persecu��o Penal.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Den�ncia.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Manifesta��o AP-MP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Manifesta��o MP-AP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Manifesta��o da AP para o Ju�zo.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Manifesta��o do MP para o Ju�zo.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Sinaliza��o Promo��o MP Pedido de Arquivamento.xml
+  ADD /dev/null -> Fluxos/1o Grau/Criminal/Tramita��o Direta entre MP e AP.xml
+  MODIFY Fluxos/1o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml -> Fluxos/1o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml
+  MODIFY Fluxos/1o Grau/Execu��o Fiscal/[EF] Expediente padr�o de comunicacao.xml -> Fluxos/1o Grau/Execu��o Fiscal/[EF] Expediente padr�o de comunicacao.xml
+  MODIFY Fluxos/1o Grau/Execu��o Fiscal/[EF] Fluxo de sobrestamento.xml -> Fluxos/1o Grau/Execu��o Fiscal/[EF] Fluxo de sobrestamento.xml
+  MODIFY Fluxos/1o Grau/Execu��o Fiscal/[EF] Prepara��o de atos judiciais - Gabinete.xml -> Fluxos/1o Grau/Execu��o Fiscal/[EF] Prepara��o de atos judiciais - Gabinete.xml
+  MODIFY Fluxos/1o Grau/Fam�lia/An�lise de Secretaria - Fam�lia.xml -> Fluxos/1o Grau/Fam�lia/An�lise de Secretaria - Fam�lia.xml
+  MODIFY Fluxos/1o Grau/Fam�lia/Elabora��o de estudo psicologico.xml -> Fluxos/1o Grau/Fam�lia/Elabora��o de estudo psicologico.xml
+  MODIFY Fluxos/1o Grau/Fam�lia/Elabora��o de estudo social.xml -> Fluxos/1o Grau/Fam�lia/Elabora��o de estudo social.xml
+  MODIFY Fluxos/1o Grau/Geral/Aguardo para Inf�ncia e Juventude - Coordenadoria.xml -> Fluxos/1o Grau/Geral/Aguardo para Inf�ncia e Juventude - Coordenadoria.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise da Manifesta��o do MP.xml -> Fluxos/1o Grau/Geral/An�lise da Manifesta��o do MP.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Documentos N�o Lidos.xml -> Fluxos/1o Grau/Geral/An�lise de Documentos N�o Lidos.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Secretaria - Empresarial e Recupera��o de Empresas e Fal�ncia.xml -> Fluxos/1o Grau/Geral/An�lise de Secretaria - Empresarial e Recupera��o de Empresas e Fal�ncia.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Secretaria - Habeas Corpus.xml -> Fluxos/1o Grau/Geral/An�lise de Secretaria - Habeas Corpus.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Secretaria - Impedimento e Suspei��o.xml -> Fluxos/1o Grau/Geral/An�lise de Secretaria - Impedimento e Suspei��o.xml
+  MODIFY Fluxos/1o Grau/Geral/An�lise de Secretaria.xml -> Fluxos/1o Grau/Geral/An�lise de Secretaria.xml
+  MODIFY Fluxos/1o Grau/Geral/Controle de Envio de Ato de Comunica��o.xml -> Fluxos/1o Grau/Geral/Controle de Envio de Ato de Comunica��o.xml
+  MODIFY Fluxos/1o Grau/Geral/Controle de Prazo Processual.xml -> Fluxos/1o Grau/Geral/Controle de Prazo Processual.xml
+  MODIFY Fluxos/1o Grau/Geral/Distribui��o por Compet�ncia.xml -> Fluxos/1o Grau/Geral/Distribui��o por Compet�ncia.xml
+  MODIFY Fluxos/1o Grau/Geral/Encaminhamento para SEJUD 1G.xml -> Fluxos/1o Grau/Geral/Encaminhamento para SEJUD 1G.xml
+  MODIFY Fluxos/1o Grau/Geral/Expedi��o de Alvar� Eletr�nico.xml -> Fluxos/1o Grau/Geral/Expedi��o de Alvar� Eletr�nico.xml
+  MODIFY Fluxos/1o Grau/Geral/Intima��o Autom�tica Padr�o.xml -> Fluxos/1o Grau/Geral/Intima��o Autom�tica Padr�o.xml
+  MODIFY Fluxos/1o Grau/Geral/Opera��o de Audi�ncia.xml -> Fluxos/1o Grau/Geral/Opera��o de Audi�ncia.xml
+  MODIFY Fluxos/1o Grau/Geral/PAC - Intima��o de Audi�ncia.xml -> Fluxos/1o Grau/Geral/PAC - Intima��o de Audi�ncia.xml
+  MODIFY Fluxos/1o Grau/Geral/Prepara��o de intima��o autom�tica � DP.xml -> Fluxos/1o Grau/Geral/Prepara��o de intima��o autom�tica � DP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Geral/Vista Autom�tica a AP.xml
+  ADD /dev/null -> Fluxos/1o Grau/Geral/Vista Autom�tica ao MP.xml
+  MODIFY Fluxos/1o Grau/Geral/Vista de Ato Judicial ao MP.xml -> Fluxos/1o Grau/Geral/Vista de Ato Judicial ao MP.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/Aguardo de retorno de estudo t�cnico MVAD.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/Aguardo de retorno de estudo t�cnico MVAD.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/Aguardo para Inf�ncia e Juventude - Se��o de Adotantes.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/Aguardo para Inf�ncia e Juventude - Se��o de Adotantes.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Ato Infracional.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Ato Infracional.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Inf�ncia e Juventude Coordenadoria.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Inf�ncia e Juventude Coordenadoria.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Inf�ncia e Juventude C�vel.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Inf�ncia e Juventude C�vel.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Medidas Socioeducativas.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Medidas Socioeducativas.xml
+  MODIFY Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Se��o de Cadastro de Adotantes e Adotandos.xml -> Fluxos/1o Grau/Inf�ncia e Juventude/An�lise de Secretaria - Se��o de Cadastro de Adotantes e Adotandos.xml
+  MODIFY Fluxos/1o Grau/Sucess�es/Aguardo de retorno da se��o de partilhas e leil�es.xml -> Fluxos/1o Grau/Sucess�es/Aguardo de retorno da se��o de partilhas e leil�es.xml
+  MODIFY Fluxos/1o Grau/Sucess�es/An�lise de Secretaria - Sucess�es.xml -> Fluxos/1o Grau/Sucess�es/An�lise de Secretaria - Sucess�es.xml
+  MODIFY Fluxos/1o Grau/Sucess�es/Elabora��o de Documento da Se��o de Partilhas e Leil�es.xml -> Fluxos/1o Grau/Sucess�es/Elabora��o de Documento da Se��o de Partilhas e Leil�es.xml
+  MODIFY Fluxos/2o Grau/Aguardo de Inclus�o em Pauta.xml -> Fluxos/2o Grau/Aguardo de Inclus�o em Pauta.xml
+  MODIFY Fluxos/2o Grau/Distribui��o por Compet�ncia.xml -> Fluxos/2o Grau/Distribui��o por Compet�ncia.xml
+  MODIFY Fluxos/2o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml -> Fluxos/2o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml
+  MODIFY Fluxos/2o Grau/Etiquetamento Peti��o.xml -> Fluxos/2o Grau/Etiquetamento Peti��o.xml
+  MODIFY Fluxos/2o Grau/Expedi��o de Alvar� Eletr�nico.xml -> Fluxos/2o Grau/Expedi��o de Alvar� Eletr�nico.xml
+  MODIFY Fluxos/2o Grau/Intima��o F�sica de Pauta de Sess�o.xml -> Fluxos/2o Grau/Intima��o F�sica de Pauta de Sess�o.xml
+  MODIFY Fluxos/2o Grau/PAC - Intima��o de Pauta de Sess�o de Julgamento.xml -> Fluxos/2o Grau/PAC - Intima��o de Pauta de Sess�o de Julgamento.xml
+  MODIFY Fluxos/2o Grau/Prepara��o de Ato Judicial de Despacho Inicial.xml -> Fluxos/2o Grau/Prepara��o de Ato Judicial de Despacho Inicial.xml
+  MODIFY Fluxos/2o Grau/Remessa de Recurso para Tribunal Superior.xml -> Fluxos/2o Grau/Remessa de Recurso para Tribunal Superior.xml
+  ADD /dev/null -> Scripts/2025/233920/PJE_FLX_ANT_001_1G_233920_criacao_de_parametro.sql
+  ADD /dev/null -> Scripts/2025/233920/PJE_FLX_VALIDACAO_ANT_001_1G_233920_criacao_de_parametro.sql
+  ADD /dev/null -> Scripts/2025/233922/PJE_FLX_ANT_001_1G_233922_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql
+  ADD /dev/null -> Scripts/2025/233922/PJE_FLX_ANT_VALIDACAO_001_1G_233922_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql
+  ADD /dev/null -> Scripts/2025/233932/PJE_FLX_ANT_01_233936_CRIA_PARAMETRO_MODELO_DOCUMENTO.sql
+  ADD /dev/null -> Scripts/2025/233932/PJE_FLX_ANT__VALIDACAO_01_233936_CRIA_PARAMETRO_MODELO_DOCUMENTO.sql
+  ADD /dev/null -> Scripts/2025/233934/PJE_FLX_POS_01_1G_233934_ATRIBUIR_LABEL_REALIZACAO_AUDIENCIA.sql
+  ADD /dev/null -> Scripts/2025/233934/PJE_FLX_POS_VALIDACAO_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql
+  ADD /dev/null -> Scripts/2025/233935/PJE_FLX_ANT_001_1G_233935_ATUALIZA_PARAMETRO_MAPAOPCOES.sql
+  ADD /dev/null -> Scripts/2025/233935/PJE_FLX_ANT_VALIDACAO_001_1G_233935_ATUALIZA_PARAMETRO_MAPAOPCOES.sql
+  ADD /dev/null -> Scripts/2025/233936/PJE_FLX_ANT_01_233936_CRIA_PARAMETRO_COM_COD_CLASSES_GARANTIAS.sql
+  ADD /dev/null -> Scripts/2025/233936/PJE_FLX_ANT__VALIDACAO_01_233936_CRIA_PARAMETRO_COM_COD_CLASSES_GARANTIAS.sql
+  ADD /dev/null -> Scripts/2025/233936/PJE_FLX_POS_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql
+  ADD /dev/null -> Scripts/2025/233936/PJE_FLX_POS_VALIDACAO_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql
+  ADD /dev/null -> Scripts/2025/233941/PJE_FLX_ANT_001_1G_2333941_atualiza_label.sql
+  ADD /dev/null -> Scripts/2025/233941/PJE_FLX_ANT_002_1G_233941_incrementa_parametro.sql
+  ADD /dev/null -> Scripts/2025/233941/PJE_FLX_ANT_VALIDACAO_001_1G_233941_atualiza_label.sql
+  ADD /dev/null -> Scripts/2025/233941/PJE_FLX_ANT_VALIDACAO_002_1G_233941_incrementa_parametro.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_001_1G_233944_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_002_1G_233944_INCREMENTA_MAPA_OPCOES.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_004_1G_233944_INCREMENTA_PARAMETRO_VERIFICA_OUTROS_FLUXOS.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_VALIDACAO_001_1G_233944_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql
+  ADD /dev/null -> Scripts/2025/233944/PJE_FLX_ANT_VALIDACAO_001_1G_233944_INCREMENTA_MAPA_OPCOES.sql
+

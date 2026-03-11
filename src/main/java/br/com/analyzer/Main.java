@@ -19,9 +19,9 @@ public class Main {
                 "C:/ambiente/ambiente_tjce/spaces/workspace_fluxos/git/PJE",
                 "ambientes/projeto-hml-2609",
                 "eric.lemos@tjce.jus.br",
-                LocalDateTime.of(2026,2,1,0,0),
-                LocalDateTime.now(),
-                Arrays.asList("transition","variable","action","node","condition","swimlane","decision","task-node")
+                LocalDateTime.of(2026,2,10,0,0),
+                LocalDateTime.of(2026,2,28,0,0),
+                Arrays.asList("transition","variable","action","node","condition","swimlane","decision","task-node","description","task name")
         );
         
         processamentoFluxos(commits);

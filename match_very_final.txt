@@ -1,0 +1,162 @@
+
+  [INFO] Nothing to compile - all classes are up to date
+  [INFO] 
+  [INFO] --- exec-maven-plugin:3.0.0:java (default-cli) @ git-commit-analyzer ---
+> ========== DEBBUG O ARQUIVO: Fluxos/1o Grau/Criminal/Comunica��o aos �rg�os de Estat�stica Pol.xml ==========
+> LINE: diff --git "a/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Policial.xml" "b/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml"
+  LINE: similarity index 87%
+> LINE: rename from "Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Policial.xml"
+> LINE: rename to "Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml"
+  LINE: index a8d7c5e..12d8b60 100644
+> LINE: --- "a/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Policial.xml"
+> LINE: +++ "b/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml"
+  LINE: @@ -1,16 +1,14 @@
+  LINE:  <?xml version="1.0" encoding="ISO-8859-1"?>
+  LINE:  
+> LINE: -<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Comunica��o aos �rg�os de Estat�stica Policial">
+  LINE: -    <description><![CDATA[cdFLuxo: CR-FCOEP.
+> LINE: -        nmFluxo: Comunica��o aos �rg�os de Estat�stica Policial.
+> LINE: +<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Comunica��o aos �rg�os de Estat�stica Pol">
+  LINE: +    <description><![CDATA[
+  LINE: +        cdFLuxo: CR-FCOEP
+> LINE: +        nmFluxo: Comunica��o aos �rg�os de Estat�stica Pol
+  LINE:  
+  LINE:          Variaveis esperadas: {
+  LINE:              pje:qtdDocumentos:instanciar - Usada para instanciar diretamente numero de expedientes desejados
+  LINE:          }]]></description>
+  LINE:      <!-- SWIMLANES -->
+> LINE: -    <swimlane name="N� de Desvio - Comunica��o aos �rg�os de Estat�stica Policial">
+  LINE: -        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1338,4:1469')}"/>
+  LINE: -    </swimlane>
+  LINE:      <swimlane name="Secretaria">
+  LINE:          <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('4:1469,111074:5967,111075:5968,111120:5970,111119:1469,6:1338,6:5483,5:1338,5:5483')}" actor-id="#{actor.id}"/>
+  LINE:      </swimlane>
+  LINE: @@ -32,12 +30,12 @@
+  LINE:          <transition to="Este fluxo ja esta instanciado?" name="N�o"/>
+> LINE:          <transition to="[Sec] - Expediente - REALIZAR COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAIS" name="Expedir documentos"/>
+  LINE:      </decision>
+> LINE: -    <decision expression="#{processoHome.retornaTasks(tramitacaoProcessualService.recuperaProcesso().processo).{ti|ti.isOpen() and !ti.isCancelled() and !ti.isSuspended() ? ti.processInstance.processDefinition.name : ''}.contains('Comunica��o aos �rg�os de Estat�stica Policial') ? 'Sim' : 'N�o'}" name="Este fluxo ja esta instanciado?">
+> LINE: +    <decision expression="#{processoHome.retornaTasks(tramitacaoProcessualService.recuperaProcesso().processo).{ti|ti.isOpen() and !ti.isCancelled() and !ti.isSuspended() ? ti.processInstance.processDefinition.name : ''}.contains('Comunica��o aos �rg�os de Estat�stica Pol') ? 'Sim' : 'N�o'}" name="Este fluxo ja esta instanciado?">
+  LINE:          <transition to="T�rmino" name="Sim"/>
+> LINE: -        <transition to="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAL" name="N�o"/>
+> LINE: +        <transition to="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POL." name="N�o"/>
+  LINE:      </decision>
+> LINE: -    <task-node end-tasks="true" name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAL">
+> LINE: -        <task name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAL" swimlane="Secretaria" priority="3">
+> LINE: +    <task-node end-tasks="true" name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POL.">
+> LINE: +        <task name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POL." swimlane="Secretaria" priority="3">
+  LINE:              <controller>
+  LINE:                  <variable name="qtdDocumentos" mapped-name="number:qtdDocumentos" access="read,write"/>
+  LINE:              </controller>
+  LINE: @@ -49,9 +47,6 @@
+  LINE:          ]]></description>
+  LINE:          <transition to="Iniciar fluxo de an�lise de secretaria" name="Cancelar elabora��o de documento"/>
+  LINE:          <transition to="Quantidade informada � maior que zero?" name="Expedir documentos"/>
+> LINE: -        <transition to="N� de Desvio - Comunica��o aos �rg�os de Estat�stica Policial" name="N� de Desvio - Comunica��o aos �rg�os de Estat�stica Policial">
+  LINE: -            <condition expression="#{true}"/>
+  LINE: -        </transition>
+  LINE:          <event type="node-enter">
+  LINE:              <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', 1)}"/>
+  LINE:          </event>
+  LINE: @@ -83,6 +78,7 @@
+  LINE:                  <variable name="avsIntimarPoliciaCivil" mapped-name="textMessage:avsIntimarPoliciaCivil" access="read,write"/>
+  LINE:                  <variable name="intimarPoliciaCivil" mapped-name="sim_nao:intimarPoliciaCivil" access="read,write"/>
+  LINE:                  <variable name="minutaEmElaboracao" mapped-name="textEditAndAttachmentSignature:minutaEmElaboracao" access="read,write"/>
+  LINE: +                <variable name="miniPac" mapped-name="miniPAC:miniPac" access="read,write"/>
+  LINE:                  <variable name="minutarEmLote" mapped-name="minutarLote:minutarEmLote" access="read"/>
+  LINE:              </controller>
+  LINE:          </task>
+  LINE: @@ -95,14 +91,14 @@
+  LINE:              Label: Intimar Departamento de Tecnologia da Informa��o e Comunica��o da Pol�cia Civil do Estado do Cear�
+  LINE:              Tipo: Checkbox
+  LINE:          ]]></description>
+  LINE: -        <transition to="O minipac foi preenchido?" name="Concluir"/>
+  LINE: -        <transition to="Iniciar fluxo de an�lise de secretaria" name="Cancelar expedi��o do documento"/>
+> LINE: -        <transition to="N� de Desvio - Comunica��o aos �rg�os de Estat�stica Policial" name="N� de Desvio - Comunica��o aos �rg�os de Estat�stica Policial">
+  LINE: +        <transition to="O minipac foi preenchido?" name="Concluir">
+  LINE:              <condition expression="#{true}"/>
+  LINE:          </transition>
+  LINE: +        <transition to="Iniciar fluxo de an�lise de secretaria" name="Cancelar expedi��o do documento"/>
+  LINE:          <event type="task-create">
+  LINE:              <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Concluir')}"/>
+  LINE:              <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','67,34')}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('prepararAto:meiosComunicacoes', 'E')}"/>
+  LINE:              <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos','Cancelar expedi��o do documento')}"/>
+  LINE:          </event>
+  LINE:      </task-node>
+  LINE: @@ -125,10 +121,11 @@
+  LINE:      <node name="Iniciar fluxo de intima��o autom�tica padr�o">
+  LINE:          <transition to="Lan�ar movimenta��o" name="Lan�ar movimenta��o"/>
+  LINE:          <event type="node-leave">
+  LINE: +            <action expression="{preencherMovimento.deCodigo(12265).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).lancarMovimento()}"/>
+  LINE:              <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-INAUPA', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+  LINE:          </event>
+  LINE:          <event type="node-enter">
+  LINE: -            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:destinatario',parametroUtil.getParametro('pje:tjce:expediente:destinatario:id:destinatarioCOTIC'))}"/>
+  LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:destinatario', parametroUtil.getParametro('pje:tjce:expediente:destinatario:id:destinatarioCOTIC'))}"/>
+  LINE:              <!-- Sem prazo -->
+  LINE:              <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:diaMesAno', 'S' )}"/>
+  LINE:              <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:quantidadeTempo', null)}"/>
+  LINE: @@ -138,7 +135,7 @@
+  LINE:          </event>
+  LINE:      </node>
+  LINE:      <end-state name="T�rmino"/>
+> LINE: -    <task-node end-tasks="true" name="N� de Desvio - Comunica��o aos �rg�os de Estat�stica Policial">
+> LINE: -        <task name="N� de Desvio - Comunica��o aos �rg�os de Estat�stica Policial" swimlane="N� de Desvio - Comunica��o aos �rg�os de Estat�stica Policial" priority="3"/>
+> LINE: -        <transition to="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAL" name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAL"/>
+> LINE: -        <transition to="[Sec] - Expediente - REALIZAR COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAIS" name="[Sec] - Expediente - REALIZAR COMUNICA��O AOS �RG�OS DE ESTAT�STICA POLICIAIS"/>
+  LINE: -        <transition to="T�rmino" name="T�rmino"/>
+  LINE: -    </task-node>
+  LINE:      <!-- PROCESS-EVENTS -->
+  LINE:      <event type="superstate-enter">
+  LINE:          <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+  ======================================================
+  ----------------------------------------- Processamento de Fluxos -----------------------------------------------
+  Mensagem: [#166992] Ajustes em visibilidade da presid�ncia
+  Commit: 8bdf1ac517844bee645db988f7915b7b047e6a53 - Data do commit: 27-02-2026
+    Fluxos/2o Grau/Precat�rios/Expedi��o de Alvar� Eletr�nico de Precat�rio via BankJus.xml -> 
+      XML {<action=2}
+      TOTAL: 2
+    Total de Itens do Commit: 2
+  
+  
+  
+  Mensagem: [#244548] Ajustes na vari�vel de sa�da e sua valida��es
+  Commit: 74fa7d47cc0f91a8df16b835b61893483f40d6e0 - Data do commit: 26-02-2026
+    Fluxos/1o Grau/Criminal/Ju�zo de Conhecimento VDOC.xml -> 
+      XML {<action=2}
+      TOTAL: 2
+    Fluxos/1o Grau/Criminal/Protocolo de Processos de Ju�zo de Conhecimento.xml -> 
+      XML {<action=1}
+      TOTAL: 1
+    Total de Itens do Commit: 3
+  
+  Mensagem: Merge branch 'features/#238906_expansao_bloco_1.2_crime_comum_e_juizo_conhecimento' into ambientes/projeto-hml-2609
+  Commit: 7e67f32ef2bb64e675e19e2f0f99d88679c33f8c - Data do commit: 11-02-2026
+>   Fluxos/1o Grau/Criminal/Comunica��o aos �rg�os de Estat�stica Pol.xml -> 
+      XML {<condition=1, <transition=9, <task-node=2, <swimlane=1, <variable=1, <action=4, <description=1, <decision=1, <task name=2}
+      TOTAL: 22
+    Fluxos/1o Grau/Criminal/Destina��o de Provas B�licas.xml -> 
+      XML {<transition=21, <task-node=1, <action=3, <decision=7, <task name=1, <node=5}
+      TOTAL: 38
+    Total de Itens do Commit: 60
+  
+  
+  
+  Mensagem: [#252076] [ITEM 34]  Corre��o de label no fluxo do Bankjus
+  Commit: 4dba08a07d17864cccb35827e98a1e5216bdbac4 - Data do commit: 10-02-2026
+    Fluxos/2o Grau/Precat�rios/Prepara��o de Expedi��o de Alvar� de Precat�rio - BANKJUS.xml -> 
+      XML {<transition=1, <action=1}
+      TOTAL: 2
+    Total de Itens do Commit: 2
+  
+  
+  
+  ----------------------------------------- Processamento de Scripts -----------------------------------------------
+  Mensagem: [#166992] Ajustes em visibilidade da presid�ncia
+  Commit: 8bdf1ac517844bee645db988f7915b7b047e6a53 - Data do commit: 27-02-2026
+  (Commit sem altera��o de scritps SQL)
+  
+  
+  
+
