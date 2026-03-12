@@ -1,8 +1,0 @@
-
-> DEBUG PARENTS - Parent 0: 2941bf99127c2e2c1635a9b30f002b88d63e55b1 Parent 1: 56c38d2bb22006fe1a8ce84b44999934e69a9062
-  ========== DIF ENTRIES ANTES DO RENAME DETECTOR COMPARED TO PARENT 56c38d2bb22006fe1a8ce84b44999934e69a9062 ==========
-  ========== DIF ENTRIES DEPOIS DO RENAME DETECTOR ==========
-  MODIFY .DS_Store -> .DS_Store
-  MODIFY .gitignore -> .gitignore
-  ADD /dev/null -> Fluxos/1o Grau/Criminal/Analise de Secretaria - Nucleo de Custodia e Garantias.xml
-
