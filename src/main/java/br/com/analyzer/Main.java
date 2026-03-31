@@ -1,6 +1,11 @@
 
 package br.com.analyzer;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -15,12 +20,19 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        PrintStream consoleOut = System.out;
+        PrintStream consoleErr = System.err;
+        FileOutputStream fileOut = new FileOutputStream(new File("resultado_analise.txt"));
+
+        System.setOut(new PrintStream(new TeeOutputStream(consoleOut, fileOut), true, "UTF-8"));
+        System.setErr(new PrintStream(new TeeOutputStream(consoleErr, fileOut), true, "UTF-8"));
+
         List<Commit> commits = GitCommitExtractor.extrair(
                 "C:/ambiente/ambiente_tjce/spaces/workspace_fluxos/git/PJE",
                 "ambientes/projeto-hml-2609",
                 "eric.lemos@tjce.jus.br",
-                LocalDateTime.of(2026,2,10,0,0),
-                LocalDateTime.of(2026,2,28,0,0),
+                LocalDateTime.of(2026,3,01,0,0),
+                LocalDateTime.of(2026,3,31,0,0),
                 Arrays.asList("transition","variable","action","node","condition","swimlane","decision","task-node","description","task name")
         );
         
@@ -31,7 +43,7 @@ public class Main {
     
     private static void processamentoFluxos(List<Commit> commits) {
     	String pattern = "dd-MM-yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern)
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         System.out.println("----------------------------------------- Processamento de Fluxos -----------------------------------------------");
 
         for (Commit c : commits) {
@@ -70,5 +82,45 @@ public class Main {
     		}
     		System.out.println("\n\n");
     	}
+    }
+    
+    private static class TeeOutputStream extends OutputStream {
+        private final OutputStream out1;
+        private final OutputStream out2;
+
+        public TeeOutputStream(OutputStream out1, OutputStream out2) {
+            this.out1 = out1;
+            this.out2 = out2;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            out1.write(b);
+            out2.write(b);
+        }
+
+        @Override
+        public void write(byte[] b) throws IOException {
+            out1.write(b);
+            out2.write(b);
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            out1.write(b, off, len);
+            out2.write(b, off, len);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            out1.flush();
+            out2.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            out1.close();
+            out2.close();
+        }
     }
 }

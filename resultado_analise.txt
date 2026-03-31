@@ -1,0 +1,2807 @@
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+========== DEBBUG O ARQUIVO: Fluxos/1o Grau/Criminal/Comunicação aos Órgãos de Estatística Pol.xml ==========
+LINE: diff --git "a/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml" "b/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml"
+LINE: new file mode 100644
+LINE: index 0000000..12d8b60
+LINE: --- /dev/null
+LINE: +++ "b/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml"
+LINE: @@ -0,0 +1,208 @@
+LINE: +<?xml version="1.0" encoding="ISO-8859-1"?>
+LINE: +
+LINE: +<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Comunicação aos Órgãos de Estatística Pol">
+LINE: +    <description><![CDATA[
+LINE: +        cdFLuxo: CR-FCOEP
+LINE: +        nmFluxo: Comunicação aos Órgãos de Estatística Pol
+LINE: +
+LINE: +        Variaveis esperadas: {
+LINE: +            pje:qtdDocumentos:instanciar - Usada para instanciar diretamente numero de expedientes desejados
+LINE: +        }]]></description>
+LINE: +    <!-- SWIMLANES -->
+LINE: +    <swimlane name="Secretaria">
+LINE: +        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('4:1469,111074:5967,111075:5968,111120:5970,111119:1469,6:1338,6:5483,5:1338,5:5483')}" actor-id="#{actor.id}"/>
+LINE: +    </swimlane>
+LINE: +    <!-- START-STATE -->
+LINE: +    <start-state name="Início">
+LINE: +        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+LINE: +        <transition to="Instanciamento oriundo do Execução de expedientes pos transito?" name="Instanciamento oriundo do Execução de expedientes pos transito?"/>
+LINE: +    </start-state>
+LINE: +    <!-- NODES -->
+LINE: +    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('pje:qtdDocumentos:instanciar') ? 'Sim' : 'Não'}" name="Instanciamento oriundo do Execução de expedientes pos transito?">
+LINE: +        <transition to="Quantidade informada é maior que zero?" name="Sim">
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', tramitacaoProcessualService.recuperaVariavel('pje:qtdDocumentos:instanciar'))}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:cr-fcoep:transicao:saida', 'Expedir documentos')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:qtdDocumentos:instanciar')}"/>
+LINE: +        </transition>
+LINE: +        <transition to="A transição de saída para expedição foi setada?" name="Não"/>
+LINE: +    </decision>
+LINE: +    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('pje:cr-fcoep:transicao:saida') ? tramitacaoProcessualService.recuperaVariavel('pje:cr-fcoep:transicao:saida') : 'Não'}" name="A transição de saída para expedição foi setada?">
+LINE: +        <transition to="Este fluxo ja esta instanciado?" name="Não"/>
+LINE: +        <transition to="[Sec] - Expediente - REALIZAR COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POLICIAIS" name="Expedir documentos"/>
+LINE: +    </decision>
+LINE: +    <decision expression="#{processoHome.retornaTasks(tramitacaoProcessualService.recuperaProcesso().processo).{ti|ti.isOpen() and !ti.isCancelled() and !ti.isSuspended() ? ti.processInstance.processDefinition.name : ''}.contains('Comunicação aos Órgãos de Estatística Pol') ? 'Sim' : 'Não'}" name="Este fluxo ja esta instanciado?">
+LINE: +        <transition to="Término" name="Sim"/>
+LINE: +        <transition to="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POL." name="Não"/>
+LINE: +    </decision>
+LINE: +    <task-node end-tasks="true" name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POL.">
+LINE: +        <task name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POL." swimlane="Secretaria" priority="3">
+LINE: +            <controller>
+LINE: +                <variable name="qtdDocumentos" mapped-name="number:qtdDocumentos" access="read,write"/>
+LINE: +            </controller>
+LINE: +        </task>
+LINE: +        <description><![CDATA[
+LINE: +            Variável: qtdDocumentos
+LINE: +            Label: Quantidade de mandados a serem expedidos
+LINE: +            Tipo: Numérico
+LINE: +        ]]></description>
+LINE: +        <transition to="Iniciar fluxo de análise de secretaria" name="Cancelar elaboração de documento"/>
+LINE: +        <transition to="Quantidade informada é maior que zero?" name="Expedir documentos"/>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', 1)}"/>
+LINE: +        </event>
+LINE: +    </task-node>
+LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') &gt; 0 ? 'Sim' : 'Não'}" name="Quantidade informada é maior que zero?">
+LINE: +        <transition to="Instanciar CR-FCOEP" name="Sim"/>
+LINE: +        <transition to="[Sec] - Expediente - REALIZAR COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POLICIAIS" name="Não"/>
+LINE: +    </decision>
+LINE: +    <node name="Instanciar CR-FCOEP">
+LINE: +        <transition to="Quantidade maior que zero após instanciamento?" name="Quantidade maior que zero após instanciamento?"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'CR-FCOEP', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') - 1)}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:cr-fcoep:transicao:saida', 'Expedir documentos')}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') &gt; 0 ? 'Sim' : 'Não'}" name="Quantidade maior que zero após instanciamento?">
+LINE: +        <transition to="Término" name="Não">
+LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:cr-fcoep:transicao:saida')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('qtdDocumentos')}"/>
+LINE: +        </transition>
+LINE: +        <transition to="Instanciar CR-FCOEP" name="Sim"/>
+LINE: +    </decision>
+LINE: +    <task-node end-tasks="true" name="[Sec] - Expediente - REALIZAR COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POLICIAIS">
+LINE: +        <task name="[Sec] - Expediente - REALIZAR COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POLICIAIS" swimlane="Secretaria" priority="3">
+LINE: +            <controller>
+LINE: +                <variable name="avsIntimarPoliciaCivil" mapped-name="textMessage:avsIntimarPoliciaCivil" access="read,write"/>
+LINE: +                <variable name="intimarPoliciaCivil" mapped-name="sim_nao:intimarPoliciaCivil" access="read,write"/>
+LINE: +                <variable name="minutaEmElaboracao" mapped-name="textEditAndAttachmentSignature:minutaEmElaboracao" access="read,write"/>
+LINE: +                <variable name="miniPac" mapped-name="miniPAC:miniPac" access="read,write"/>
+LINE: +                <variable name="minutarEmLote" mapped-name="minutarLote:minutarEmLote" access="read"/>
+LINE: +            </controller>
+LINE: +        </task>
+LINE: +        <description><![CDATA[
+LINE: +            Variável: avsIntimarPoliciaCivil
+LINE: +            Label: Ao marcar o check box relativo ao Departamento de Tecnologia da Informação e Comunicação da Polícia Civil do Estado do Ceará, será lançada a intimação automática deste, sem prejuízo do uso do Minipac para intimações a outros destinatários
+LINE: +            Tipo: Aviso Customizado
+LINE: +
+LINE: +            Variável: intimarPoliciaCivil
+LINE: +            Label: Intimar Departamento de Tecnologia da Informação e Comunicação da Polícia Civil do Estado do Ceará
+LINE: +            Tipo: Checkbox
+LINE: +        ]]></description>
+LINE: +        <transition to="O minipac foi preenchido?" name="Concluir">
+LINE: +            <condition expression="#{true}"/>
+LINE: +        </transition>
+LINE: +        <transition to="Iniciar fluxo de análise de secretaria" name="Cancelar expedição do documento"/>
+LINE: +        <event type="task-create">
+LINE: +            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Concluir')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','67,34')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('prepararAto:meiosComunicacoes', 'E')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos','Cancelar expedição do documento')}"/>
+LINE: +        </event>
+LINE: +    </task-node>
+LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:miniPac:existente') ? 'Sim' : 'Não'}" name="O minipac foi preenchido?">
+LINE: +        <transition to="Iniciar fluxo de Controle de Envio de Ato de Comunicação" name="Sim"/>
+LINE: +        <transition to="Intimar a policia?" name="Não"/>
+LINE: +    </decision>
+LINE: +    <!-- Envia o expediente para as partes selecionadas no minipac -->
+LINE: +    <node name="Iniciar fluxo de Controle de Envio de Ato de Comunicação">
+LINE: +        <transition to="Intimar a policia?" name="Intimar a policia?"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-FCEAC', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables ,tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('intimarPoliciaCivil') ? 'Sim' : 'Não'}" name="Intimar a policia?">
+LINE: +        <transition to="Iniciar fluxo de intimação automática padrão" name="Sim"/>
+LINE: +        <transition to="Lançar movimentação" name="Não"/>
+LINE: +    </decision>
+LINE: +    <!-- Envia o expediente para a Policia Civil -->
+LINE: +    <node name="Iniciar fluxo de intimação automática padrão">
+LINE: +        <transition to="Lançar movimentação" name="Lançar movimentação"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="{preencherMovimento.deCodigo(12265).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).lancarMovimento()}"/>
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-INAUPA', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:destinatario', parametroUtil.getParametro('pje:tjce:expediente:destinatario:id:destinatarioCOTIC'))}"/>
+LINE: +            <!-- Sem prazo -->
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:diaMesAno', 'S' )}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:quantidadeTempo', null)}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:passaDocumentoJuntado', true )}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <node name="Lançar movimentação">
+LINE: +        <transition to="Iniciar fluxo de conferencia pos transito" name="Iniciar fluxo de conferencia pos transito"/>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado')).getTipoProcessoDocumento().getCodigoDocumento().equals(parametroUtil.getParametro('pje:tjce:fluxo:codDocAtoOrdinatorio')) ? preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).lancarMovimento() : preencherMovimento.deCodigo(60).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(79).lancarMovimento()}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <node name="Iniciar fluxo de conferencia pos transito">
+LINE: +        <transition to="Término" name="Término"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="#{processInstanceUtil.getVariables().{e | e.getKey() != 'pje:tjce:fluxo:idsExpedientesGerais' and e.getKey() != 'pje:tjce:fluxo:idsExpedientesRecurso' and e.getKey() != 'pje:tjce:fluxo:fluxoSaida' and e.getKey() != 'pje:fluxo:temporizador:dataAguardar' and e.getKey() != 'processo' and e.getKey() != 'pje:atoProferido' and e.getKey() != 'pje:fluxo:ultimoDocumentoJuntado' and e.getKey() != 'idOrgaoJulgadorCumprimento' and e.getKey() != 'idOrgaoJulgadorColegiadoCumprimento' and e.getKey() != 'idOrgaoJulgadorCargoCumprimento' and e.getKey() != 'idLocalizacaoCumprimento' and e.getKey() != 'minutaEmElaboracao' ? tramitacaoProcessualService.apagaVariavel(e.getKey()) : ''}.contains('')}"/>
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'CR-CEPT', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <node name="Iniciar fluxo de análise de secretaria">
+LINE: +        <transition to="Término" name="Término"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="#{processInstanceUtil.getVariables().{e | e.getKey() != 'pje:tjce:fluxo:idsExpedientesGerais' and e.getKey() != 'pje:tjce:fluxo:idsExpedientesRecurso' and e.getKey() != 'pje:tjce:fluxo:fluxoSaida' and e.getKey() != 'pje:fluxo:temporizador:dataAguardar' and e.getKey() != 'processo' and e.getKey() != 'pje:atoProferido' and e.getKey() != 'pje:fluxo:ultimoDocumentoJuntado' and e.getKey() != 'idOrgaoJulgadorCumprimento' and e.getKey() != 'idOrgaoJulgadorColegiadoCumprimento' and e.getKey() != 'idOrgaoJulgadorCargoCumprimento' and e.getKey() != 'idLocalizacaoCumprimento' and e.getKey() != 'minutaEmElaboracao' ? tramitacaoProcessualService.apagaVariavel(e.getKey()) : ''}.contains('')}"/>
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-FVPS', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{empty tramitacaoProcessualService.recuperaVariavel('pje:tjce:fluxo:fluxoSaida') ? tramitacaoProcessualService.gravaVariavel('pje:tjce:fluxo:fluxoSaida', parametroUtil.getParametro('pje:tjce:fluxo:fluxoSaidaPadrao')) : ''}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <end-state name="Término"/>
+LINE: +    <!-- PROCESS-EVENTS -->
+LINE: +    <event type="superstate-enter">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="process-start">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="before-signal">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="task-end">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="task-create">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="subprocess-created">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="task-assign">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="transition">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="after-signal">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="timer">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="task-start">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="subprocess-end">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="process-end">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="node-leave">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="superstate-leave">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="node-enter">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +</process-definition>
+======================================================
+========== DEBBUG O ARQUIVO: Fluxos/1o Grau/Criminal/Comunicação aos Órgãos de Estatística Pol.xml ==========
+LINE: diff --git "a/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml" "b/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml"
+LINE: new file mode 100644
+LINE: index 0000000..12d8b60
+LINE: --- /dev/null
+LINE: +++ "b/Fluxos/1o Grau/Criminal/Comunica\303\247\303\243o aos \303\223rg\303\243os de Estat\303\255stica Pol.xml"
+LINE: @@ -0,0 +1,208 @@
+LINE: +<?xml version="1.0" encoding="ISO-8859-1"?>
+LINE: +
+LINE: +<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Comunicação aos Órgãos de Estatística Pol">
+LINE: +    <description><![CDATA[
+LINE: +        cdFLuxo: CR-FCOEP
+LINE: +        nmFluxo: Comunicação aos Órgãos de Estatística Pol
+LINE: +
+LINE: +        Variaveis esperadas: {
+LINE: +            pje:qtdDocumentos:instanciar - Usada para instanciar diretamente numero de expedientes desejados
+LINE: +        }]]></description>
+LINE: +    <!-- SWIMLANES -->
+LINE: +    <swimlane name="Secretaria">
+LINE: +        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('4:1469,111074:5967,111075:5968,111120:5970,111119:1469,6:1338,6:5483,5:1338,5:5483')}" actor-id="#{actor.id}"/>
+LINE: +    </swimlane>
+LINE: +    <!-- START-STATE -->
+LINE: +    <start-state name="Início">
+LINE: +        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+LINE: +        <transition to="Instanciamento oriundo do Execução de expedientes pos transito?" name="Instanciamento oriundo do Execução de expedientes pos transito?"/>
+LINE: +    </start-state>
+LINE: +    <!-- NODES -->
+LINE: +    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('pje:qtdDocumentos:instanciar') ? 'Sim' : 'Não'}" name="Instanciamento oriundo do Execução de expedientes pos transito?">
+LINE: +        <transition to="Quantidade informada é maior que zero?" name="Sim">
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', tramitacaoProcessualService.recuperaVariavel('pje:qtdDocumentos:instanciar'))}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:cr-fcoep:transicao:saida', 'Expedir documentos')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:qtdDocumentos:instanciar')}"/>
+LINE: +        </transition>
+LINE: +        <transition to="A transição de saída para expedição foi setada?" name="Não"/>
+LINE: +    </decision>
+LINE: +    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('pje:cr-fcoep:transicao:saida') ? tramitacaoProcessualService.recuperaVariavel('pje:cr-fcoep:transicao:saida') : 'Não'}" name="A transição de saída para expedição foi setada?">
+LINE: +        <transition to="Este fluxo ja esta instanciado?" name="Não"/>
+LINE: +        <transition to="[Sec] - Expediente - REALIZAR COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POLICIAIS" name="Expedir documentos"/>
+LINE: +    </decision>
+LINE: +    <decision expression="#{processoHome.retornaTasks(tramitacaoProcessualService.recuperaProcesso().processo).{ti|ti.isOpen() and !ti.isCancelled() and !ti.isSuspended() ? ti.processInstance.processDefinition.name : ''}.contains('Comunicação aos Órgãos de Estatística Pol') ? 'Sim' : 'Não'}" name="Este fluxo ja esta instanciado?">
+LINE: +        <transition to="Término" name="Sim"/>
+LINE: +        <transition to="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POL." name="Não"/>
+LINE: +    </decision>
+LINE: +    <task-node end-tasks="true" name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POL.">
+LINE: +        <task name="[Sec] - Expediente - INFORMAR QUANTIDADE DE DOCUMENTOS DE COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POL." swimlane="Secretaria" priority="3">
+LINE: +            <controller>
+LINE: +                <variable name="qtdDocumentos" mapped-name="number:qtdDocumentos" access="read,write"/>
+LINE: +            </controller>
+LINE: +        </task>
+LINE: +        <description><![CDATA[
+LINE: +            Variável: qtdDocumentos
+LINE: +            Label: Quantidade de mandados a serem expedidos
+LINE: +            Tipo: Numérico
+LINE: +        ]]></description>
+LINE: +        <transition to="Iniciar fluxo de análise de secretaria" name="Cancelar elaboração de documento"/>
+LINE: +        <transition to="Quantidade informada é maior que zero?" name="Expedir documentos"/>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', 1)}"/>
+LINE: +        </event>
+LINE: +    </task-node>
+LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') &gt; 0 ? 'Sim' : 'Não'}" name="Quantidade informada é maior que zero?">
+LINE: +        <transition to="Instanciar CR-FCOEP" name="Sim"/>
+LINE: +        <transition to="[Sec] - Expediente - REALIZAR COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POLICIAIS" name="Não"/>
+LINE: +    </decision>
+LINE: +    <node name="Instanciar CR-FCOEP">
+LINE: +        <transition to="Quantidade maior que zero após instanciamento?" name="Quantidade maior que zero após instanciamento?"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'CR-FCOEP', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('qtdDocumentos', tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') - 1)}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:cr-fcoep:transicao:saida', 'Expedir documentos')}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('qtdDocumentos') &gt; 0 ? 'Sim' : 'Não'}" name="Quantidade maior que zero após instanciamento?">
+LINE: +        <transition to="Término" name="Não">
+LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:cr-fcoep:transicao:saida')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.apagaVariavel('qtdDocumentos')}"/>
+LINE: +        </transition>
+LINE: +        <transition to="Instanciar CR-FCOEP" name="Sim"/>
+LINE: +    </decision>
+LINE: +    <task-node end-tasks="true" name="[Sec] - Expediente - REALIZAR COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POLICIAIS">
+LINE: +        <task name="[Sec] - Expediente - REALIZAR COMUNICAÇÃO AOS ÓRGÃOS DE ESTATÍSTICA POLICIAIS" swimlane="Secretaria" priority="3">
+LINE: +            <controller>
+LINE: +                <variable name="avsIntimarPoliciaCivil" mapped-name="textMessage:avsIntimarPoliciaCivil" access="read,write"/>
+LINE: +                <variable name="intimarPoliciaCivil" mapped-name="sim_nao:intimarPoliciaCivil" access="read,write"/>
+LINE: +                <variable name="minutaEmElaboracao" mapped-name="textEditAndAttachmentSignature:minutaEmElaboracao" access="read,write"/>
+LINE: +                <variable name="miniPac" mapped-name="miniPAC:miniPac" access="read,write"/>
+LINE: +                <variable name="minutarEmLote" mapped-name="minutarLote:minutarEmLote" access="read"/>
+LINE: +            </controller>
+LINE: +        </task>
+LINE: +        <description><![CDATA[
+LINE: +            Variável: avsIntimarPoliciaCivil
+LINE: +            Label: Ao marcar o check box relativo ao Departamento de Tecnologia da Informação e Comunicação da Polícia Civil do Estado do Ceará, será lançada a intimação automática deste, sem prejuízo do uso do Minipac para intimações a outros destinatários
+LINE: +            Tipo: Aviso Customizado
+LINE: +
+LINE: +            Variável: intimarPoliciaCivil
+LINE: +            Label: Intimar Departamento de Tecnologia da Informação e Comunicação da Polícia Civil do Estado do Ceará
+LINE: +            Tipo: Checkbox
+LINE: +        ]]></description>
+LINE: +        <transition to="O minipac foi preenchido?" name="Concluir">
+LINE: +            <condition expression="#{true}"/>
+LINE: +        </transition>
+LINE: +        <transition to="Iniciar fluxo de análise de secretaria" name="Cancelar expedição do documento"/>
+LINE: +        <event type="task-create">
+LINE: +            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Concluir')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','67,34')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('prepararAto:meiosComunicacoes', 'E')}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos','Cancelar expedição do documento')}"/>
+LINE: +        </event>
+LINE: +    </task-node>
+LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:miniPac:existente') ? 'Sim' : 'Não'}" name="O minipac foi preenchido?">
+LINE: +        <transition to="Iniciar fluxo de Controle de Envio de Ato de Comunicação" name="Sim"/>
+LINE: +        <transition to="Intimar a policia?" name="Não"/>
+LINE: +    </decision>
+LINE: +    <!-- Envia o expediente para as partes selecionadas no minipac -->
+LINE: +    <node name="Iniciar fluxo de Controle de Envio de Ato de Comunicação">
+LINE: +        <transition to="Intimar a policia?" name="Intimar a policia?"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-FCEAC', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'),tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables ,tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('intimarPoliciaCivil') ? 'Sim' : 'Não'}" name="Intimar a policia?">
+LINE: +        <transition to="Iniciar fluxo de intimação automática padrão" name="Sim"/>
+LINE: +        <transition to="Lançar movimentação" name="Não"/>
+LINE: +    </decision>
+LINE: +    <!-- Envia o expediente para a Policia Civil -->
+LINE: +    <node name="Iniciar fluxo de intimação automática padrão">
+LINE: +        <transition to="Lançar movimentação" name="Lançar movimentação"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="{preencherMovimento.deCodigo(12265).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).lancarMovimento()}"/>
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-INAUPA', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:destinatario', parametroUtil.getParametro('pje:tjce:expediente:destinatario:id:destinatarioCOTIC'))}"/>
+LINE: +            <!-- Sem prazo -->
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:diaMesAno', 'S' )}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:quantidadeTempo', null)}"/>
+LINE: +            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:intimacao:passaDocumentoJuntado', true )}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <node name="Lançar movimentação">
+LINE: +        <transition to="Iniciar fluxo de conferencia pos transito" name="Iniciar fluxo de conferencia pos transito"/>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado')).getTipoProcessoDocumento().getCodigoDocumento().equals(parametroUtil.getParametro('pje:tjce:fluxo:codDocAtoOrdinatorio')) ? preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).lancarMovimento() : preencherMovimento.deCodigo(60).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(79).lancarMovimento()}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <node name="Iniciar fluxo de conferencia pos transito">
+LINE: +        <transition to="Término" name="Término"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="#{processInstanceUtil.getVariables().{e | e.getKey() != 'pje:tjce:fluxo:idsExpedientesGerais' and e.getKey() != 'pje:tjce:fluxo:idsExpedientesRecurso' and e.getKey() != 'pje:tjce:fluxo:fluxoSaida' and e.getKey() != 'pje:fluxo:temporizador:dataAguardar' and e.getKey() != 'processo' and e.getKey() != 'pje:atoProferido' and e.getKey() != 'pje:fluxo:ultimoDocumentoJuntado' and e.getKey() != 'idOrgaoJulgadorCumprimento' and e.getKey() != 'idOrgaoJulgadorColegiadoCumprimento' and e.getKey() != 'idOrgaoJulgadorCargoCumprimento' and e.getKey() != 'idLocalizacaoCumprimento' and e.getKey() != 'minutaEmElaboracao' ? tramitacaoProcessualService.apagaVariavel(e.getKey()) : ''}.contains('')}"/>
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'CR-CEPT', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <node name="Iniciar fluxo de análise de secretaria">
+LINE: +        <transition to="Término" name="Término"/>
+LINE: +        <event type="node-leave">
+LINE: +            <action expression="#{processInstanceUtil.getVariables().{e | e.getKey() != 'pje:tjce:fluxo:idsExpedientesGerais' and e.getKey() != 'pje:tjce:fluxo:idsExpedientesRecurso' and e.getKey() != 'pje:tjce:fluxo:fluxoSaida' and e.getKey() != 'pje:fluxo:temporizador:dataAguardar' and e.getKey() != 'processo' and e.getKey() != 'pje:atoProferido' and e.getKey() != 'pje:fluxo:ultimoDocumentoJuntado' and e.getKey() != 'idOrgaoJulgadorCumprimento' and e.getKey() != 'idOrgaoJulgadorColegiadoCumprimento' and e.getKey() != 'idOrgaoJulgadorCargoCumprimento' and e.getKey() != 'idLocalizacaoCumprimento' and e.getKey() != 'minutaEmElaboracao' ? tramitacaoProcessualService.apagaVariavel(e.getKey()) : ''}.contains('')}"/>
+LINE: +            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'GE-FVPS', tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorCargoCumprimento'), tramitacaoProcessualService.recuperaVariavel('idOrgaoJulgadorColegiadoCumprimento'), true, processInstance.contextInstance.variables, tramitacaoProcessualService.recuperaVariavel('idLocalizacaoCumprimento'))}"/>
+LINE: +        </event>
+LINE: +        <event type="node-enter">
+LINE: +            <action expression="#{empty tramitacaoProcessualService.recuperaVariavel('pje:tjce:fluxo:fluxoSaida') ? tramitacaoProcessualService.gravaVariavel('pje:tjce:fluxo:fluxoSaida', parametroUtil.getParametro('pje:tjce:fluxo:fluxoSaidaPadrao')) : ''}"/>
+LINE: +        </event>
+LINE: +    </node>
+LINE: +    <end-state name="Término"/>
+LINE: +    <!-- PROCESS-EVENTS -->
+LINE: +    <event type="superstate-enter">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="process-start">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="before-signal">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="task-end">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="task-create">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="subprocess-created">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="task-assign">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="transition">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="after-signal">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="timer">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="task-start">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="subprocess-end">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="process-end">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="node-leave">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="superstate-leave">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +    <event type="node-enter">
+LINE: +        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+LINE: +    </event>
+LINE: +</process-definition>
+======================================================
+----------------------------------------- Processamento de Fluxos -----------------------------------------------
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' into 'ambientes/projeto-hml-2609'
+Commit: 03d5483a8cf9fbaa5b3e35e3145317f186cca186 - Data do commit: 27-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Total de Itens do Commit: 2
+
+
+
+Mensagem: [#255426] Correção no redirecionamento do fluxo de saída para casos com criança e adolescente
+Commit: 5cd707a651aac82375d279c0a7403655e679eab9 - Data do commit: 27-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Total de Itens do Commit: 2
+
+
+
+Mensagem: [#255426] Alteração de regra de negócio para habeas corpus criminal
+Commit: 286de16ca597194cdda493fa6b8b2cbedcf6a118 - Data do commit: 27-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=8, <action=2, <decision=2, <node=2}
+    TOTAL: 14
+  Total de Itens do Commit: 14
+
+
+
+Mensagem: [#255426] [item 67] Alterando fluxo de saída conforme requisitado pelo analista de negócio
+Commit: 35e5eb4eed9e4f0c1cd87d986c9d63f9aba8b480 - Data do commit: 27-03-2026
+  Fluxos/1o Grau/Criminal/Análise de Triagem Inicial - Medidas Cautelares e Garantidoras.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: [#255426] Correção dos ids das classes a serem parametrizadas II
+Commit: 1a8fcd381b6354c27065184f38a1d18e0ebd4a09 - Data do commit: 26-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: [#255426] Correção dos ids das classes a serem parametrizadas
+Commit: 8c6a1663858f488aa8455548c591e36af8a10f4d - Data do commit: 26-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: [#251149] Commit inicial do Fluxo de Preparação de Ato Judicial de Atos Preparatórios para Sessão do Júri
+Commit: d7b4295bddd2f48e1859cd52d7ef1a69c870b069 - Data do commit: 26-03-2026
+  Fluxos/1o Grau/Criminal/Preparação de Ato Judicial de Atos Preparatórios para Sessão do Júri.xml -> 
+    XML {<condition=1, <transition=5, <task-node=2, <swimlane=2, <variable=1, <task name=3}
+    TOTAL: 14
+  Total de Itens do Commit: 14
+
+
+
+Mensagem: [#248091] Ajuste para exibir o botão de assinatura na tarefa de expedição
+Commit: d02de0cc844223b96711a8a87c1c11805784e93e - Data do commit: 24-03-2026
+  Fluxos/1o Grau/Criminal/Expedição de Ofício para Destruição de Drogas.xml -> 
+    XML {<variable=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: [#255256] Melhoria no script de verificar filhas de uma classe
+Commit: 9096b5028341409c995bb5372ed760ce33a4d48e - Data do commit: 24-03-2026
+  Fluxos/1o Grau/Criminal/Distribuição por Competência de Crimes Envolvendo Menores.xml -> 
+    XML {<transition=21, <action=7, <description=1, <decision=7, <task name=1}
+    TOTAL: 37
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<condition=10, <transition=124, <variable=3, <action=58, <decision=31, <task name=4, <node=2}
+    TOTAL: 232
+  Total de Itens do Commit: 274
+
+
+
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' into 'ambientes/projeto-hml-2609'
+Commit: ed1fbf12f296f9473f19f9c0d4adbbbb50f3374a - Data do commit: 18-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 5
+
+
+
+Mensagem: [#255426] Correção em EL e parametro
+Commit: 4061ce22de52ad41dd2332a6c5de80477376bc8c - Data do commit: 18-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 5
+
+
+
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' into 'ambientes/projeto-hml-2609'
+Commit: 56b7be798ce625f901d1252651ceec0131af146f - Data do commit: 18-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: [#255426] Colocando o código da classe 316 corretamente
+Commit: 883d8f9fd86f77c06ae1bcbf1880526defdca533 - Data do commit: 18-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' of https://git.tjce.jus.br/sistemas/PJE into features/#260705_expansao_bloco_2.4_dignidade_sexual_menores
+Commit: 201ee6b94acb1359302e9d10bfa9269e063048c3 - Data do commit: 18-03-2026
+  Fluxos/1o Grau/Criminal/Análise da Manifestação do MP - Crime.xml -> 
+    XML {<condition=2, <transition=5, <task-node=1, <swimlane=1, <action=10, <task name=1, <node=1}
+    TOTAL: 21
+  Fluxos/1o Grau/Criminal/Análise de Secretaria - Crimes Tráfico de Drogas.xml -> 
+    XML {<transition=46}
+    TOTAL: 46
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento Tráfico de Drogas.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 68
+
+
+
+Mensagem: [#248091] Criação do script de configuração de label
+Commit: 4ae2d9991c6a4a47691c565ffb9710377b71a110 - Data do commit: 18-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: [#255256] Ajuste apenas da nomenclatura do método
+Commit: 6b67762857912351e2d1114f194ca7d00ebf8491 - Data do commit: 18-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: [#255256] Ajuste apenas da nomenclatura do método
+Commit: a7c26d69a3e5dd84cc3ad3c0dfa1fabb51474603 - Data do commit: 18-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: [#255426] Ajustes na distribuição para identificar corretamente a competência de crimes contra a diginidade de menores
+Commit: 1869765cfec5c5a67a5ba5288eaca792d223ef53 - Data do commit: 17-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=6, <action=3, <decision=3}
+    TOTAL: 12
+  Total de Itens do Commit: 12
+
+
+
+Mensagem: [#248091] Correção de sintaxe
+Commit: b1d33cdc99b6e01826298c5a8a313d8f8dda7e0c - Data do commit: 16-03-2026
+  Fluxos/1o Grau/Criminal/Expedição de Ofício para Destruição de Drogas.xml -> 
+    XML {<transition=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: [#248091] Remoção de tarefa desnecessária
+Commit: 57541c2844149d7ae54510f2a8dc48f741963815 - Data do commit: 16-03-2026
+  Fluxos/1o Grau/Criminal/Expedição de Ofício para Destruição de Drogas.xml -> 
+    XML {<condition=1, <transition=2, <task-node=1, <swimlane=4, <variable=2, <action=3, <task name=1}
+    TOTAL: 14
+  Total de Itens do Commit: 14
+
+
+
+Mensagem: [#248091] Adaptação para o fluxo de conferir expedientes pos trânsito
+Commit: a5194f2d781b5833536b20f255cb3f1f4bd9eff4 - Data do commit: 16-03-2026
+  Fluxos/1o Grau/Criminal/Expedição de Ofício para Destruição de Drogas.xml -> 
+    XML {<condition=8, <transition=50, <task-node=7, <swimlane=3, <variable=8, <action=31, <decision=6, <task name=7, <node=11}
+    TOTAL: 131
+  Total de Itens do Commit: 131
+
+
+
+Mensagem: [#255256] Resolvendo conflitos gerais
+Commit: 2e48ac85a379f9afccfc8e1df8e1e35b295f4ca8 - Data do commit: 13-03-2026
+  Fluxos/1o Grau/Criminal/Análise de Secretaria - VDOC.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Fluxos/1o Grau/Criminal/Preparação Padrão de Ato Judicial Múltiplas Assinaturas.xml -> 
+    XML {}
+    TOTAL: 0
+  Fluxos/1o Grau/Criminal/Preparação de Intimação automática ao MP.xml -> 
+    XML {<condition=3, <transition=1}
+    TOTAL: 4
+  Fluxos/1o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml -> 
+    XML {<transition=4, <variable=1, <action=3, <description=2, <decision=1, <node=1}
+    TOTAL: 12
+  Fluxos/1o Grau/Execução Fiscal/[EF] Expediente padrão de comunicacao.xml -> 
+    XML {<condition=1}
+    TOTAL: 1
+  Fluxos/1o Grau/Execução Fiscal/[EF] Preparação de atos de serventuário.xml -> 
+    XML {<condition=3, <transition=3}
+    TOTAL: 6
+  Fluxos/1o Grau/Execução Fiscal/[EF] Preparação de atos judiciais - Gabinete.xml -> 
+    XML {<condition=4, <transition=11, <action=13, <description=1, <node=2}
+    TOTAL: 31
+  Fluxos/1o Grau/Execução Fiscal/[EF] Preparação de atos judiciais - Secretaria.xml -> 
+    XML {<condition=4, <transition=9, <action=9, <node=2}
+    TOTAL: 24
+  Fluxos/1o Grau/Execução Fiscal/[EF] Preparação de atos judiciais iniciais automatizados.xml -> 
+    XML {<condition=6, <transition=14, <action=10, <description=1, <decision=1, <node=2}
+    TOTAL: 34
+  Fluxos/1o Grau/Família/Preparação de Ato Judicial Genérico - Família.xml -> 
+    XML {<condition=3, <transition=3}
+    TOTAL: 6
+  Fluxos/1o Grau/Geral/Aguardo de Suspensão ou Sobrestamento.xml -> 
+    XML {<action=2, <description=1}
+    TOTAL: 3
+  Fluxos/1o Grau/Geral/Aguardo para Infância e Juventude - Coordenadoria.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Fluxos/1o Grau/Geral/Análise Automática de Ato Judicial Proferido.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Geral/Análise da Manifestação do MP.xml -> 
+    XML {<condition=1, <transition=10, <task-node=2, <swimlane=2, <variable=1, <action=8, <description=1, <task name=3, <node=3}
+    TOTAL: 31
+  Fluxos/1o Grau/Geral/Análise de Ato Judicial Proferido.xml -> 
+    XML {<condition=3, <transition=4, <action=2, <node=1}
+    TOTAL: 10
+  Fluxos/1o Grau/Geral/Arquivamento.xml -> 
+    XML {<condition=1, <transition=2, <action=1, <node=1}
+    TOTAL: 5
+  Fluxos/1o Grau/Geral/Controle de Envio de Ato de Comunicação.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Fluxos/1o Grau/Geral/Controle de Prazo Processual.xml -> 
+    XML {<action=2, <description=1, <decision=1}
+    TOTAL: 4
+  Fluxos/1o Grau/Geral/Controle de Prazo para Recurso.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Geral/Encaminhamento para Fluxo de Análise.xml -> 
+    XML {<action=1, <description=1, <decision=2}
+    TOTAL: 4
+  Fluxos/1o Grau/Geral/Encaminhamento para SEJUD 1G.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Fluxos/1o Grau/Geral/Evolução de Classe.xml -> 
+    XML {<action=4}
+    TOTAL: 4
+  Fluxos/1o Grau/Geral/Expedição de Ato Ordinatório.xml -> 
+    XML {<transition=3, <decision=1}
+    TOTAL: 4
+  Fluxos/1o Grau/Geral/Expedição de Ofício.xml -> 
+    XML {<transition=5, <action=3, <decision=1, <node=2}
+    TOTAL: 11
+  Fluxos/1o Grau/Geral/Intimação Automática Padrão.xml -> 
+    XML {<transition=7, <task-node=1, <swimlane=2, <action=10, <description=1, <decision=1, <task name=2, <node=3}
+    TOTAL: 27
+  Fluxos/1o Grau/Geral/PAC - Intimação de Audiência.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Geral/Preparação Padrão de Ato Judicial de Decisão.xml -> 
+    XML {<condition=6, <transition=9, <action=9, <node=1}
+    TOTAL: 25
+  Fluxos/1o Grau/Geral/Preparação Padrão de Ato Judicial de Despacho de Nova Audiência.xml -> 
+    XML {<condition=6, <transition=9, <action=9, <node=1}
+    TOTAL: 25
+  Fluxos/1o Grau/Geral/Preparação Padrão de Ato Judicial de Despacho.xml -> 
+    XML {<condition=6, <transition=9, <action=9, <node=1}
+    TOTAL: 25
+  Fluxos/1o Grau/Geral/Preparação Padrão de Ato Judicial de Sentença.xml -> 
+    XML {<condition=6, <transition=6, <action=7, <decision=1, <node=1}
+    TOTAL: 21
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Carta Precatória.xml -> 
+    XML {<condition=3, <transition=5, <decision=1}
+    TOTAL: 9
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Cumprimento de Sentença.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Decisão de Emb. de Declaração.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Decisão de Suspensão ou Sobrestamento.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Decisão de Urgência Inicial.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Decisão de Urgência.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Decisão sobre Reativação.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Decisão sobre Recurso.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Decisão.xml -> 
+    XML {<condition=6, <transition=9, <action=9, <node=1}
+    TOTAL: 25
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Despacho Inicial.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Despacho de Cumprimento de Sentença.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Despacho.xml -> 
+    XML {<condition=6, <transition=9, <action=9, <node=1}
+    TOTAL: 25
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Regra Geral.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Sentença com Mérito.xml -> 
+    XML {<condition=3, <transition=3, <action=4}
+    TOTAL: 10
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Sentença de Homologação.xml -> 
+    XML {<condition=3, <transition=3, <action=4}
+    TOTAL: 10
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Sentença sem Mérito.xml -> 
+    XML {<condition=3, <transition=3, <action=4}
+    TOTAL: 10
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Sentença.xml -> 
+    XML {<condition=6, <transition=6, <action=7}
+    TOTAL: 19
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial de Solução de Embargos de Declaração.xml -> 
+    XML {<condition=4, <transition=6, <action=8, <node=1}
+    TOTAL: 19
+  Fluxos/1o Grau/Geral/Preparação de Ato Judicial sobre Paradigma Julgado.xml -> 
+    XML {<condition=3, <transition=5, <action=8, <node=1}
+    TOTAL: 17
+  Fluxos/1o Grau/Geral/Preparação de intimação automática à DP.xml -> 
+    XML {<action=4}
+    TOTAL: 4
+  Fluxos/1o Grau/Geral/Redistribuição.xml -> 
+    XML {<condition=5, <transition=13, <action=33, <node=6}
+    TOTAL: 57
+  Fluxos/1o Grau/Geral/Retificação de Conclusão.xml -> 
+    XML {<condition=35, <transition=58, <task-node=4, <swimlane=3, <variable=6, <action=85, <description=4, <decision=3, <task name=5, <node=12}
+    TOTAL: 215
+  Fluxos/1o Grau/Geral/Vista Automática a AP.xml -> 
+    XML {<condition=2, <transition=17, <task-node=2, <swimlane=2, <variable=1, <action=19, <description=2, <decision=2, <task name=3, <node=7}
+    TOTAL: 57
+  Fluxos/1o Grau/Geral/Vista Automática ao MP.xml -> 
+    XML {<condition=2, <transition=27, <task-node=2, <swimlane=2, <variable=1, <action=36, <description=2, <decision=5, <task name=3, <node=11}
+    TOTAL: 91
+  Fluxos/1o Grau/Geral/Vista de Ato Judicial ao MP.xml -> 
+    XML {<action=4}
+    TOTAL: 4
+  Fluxos/1o Grau/Infância e Juventude/Aguardo de retorno de estudo técnico MVAD.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Fluxos/1o Grau/Infância e Juventude/Aguardo para Infância e Juventude - Seção de Adotantes.xml -> 
+    XML {<transition=6, <action=10, <decision=1, <node=2}
+    TOTAL: 19
+  Fluxos/1o Grau/Infância e Juventude/Preparação Padrão de Ato Judicial de Decisão - Seção de Cadastro de Adotantes e Adotandos.xml -> 
+    XML {<condition=6, <transition=6}
+    TOTAL: 12
+  Fluxos/2o Grau/Aguardo de Inclusão em Pauta.xml -> 
+    XML {<transition=1}
+    TOTAL: 1
+  Fluxos/2o Grau/Análise da Corte Superior.xml -> 
+    XML {<transition=4, <action=6, <node=2}
+    TOTAL: 12
+  Fluxos/2o Grau/Análise de SEJUD.xml -> 
+    XML {<action=4}
+    TOTAL: 4
+  Fluxos/2o Grau/Distribuição por Competência.xml -> 
+    XML {<swimlane=1, <task name=1}
+    TOTAL: 2
+  Fluxos/2o Grau/ECarta/Integração PJe x Ecarta.xml -> 
+    XML {<transition=2, <action=1, <node=1}
+    TOTAL: 4
+  Fluxos/2o Grau/ECarta/Registro de Aviso de Recebimento ECarta.xml -> 
+    XML {<transition=4, <variable=1, <action=3, <description=2, <decision=1, <node=1}
+    TOTAL: 12
+  Fluxos/2o Grau/Encaminhamento para Fluxo de Análise.xml -> 
+    XML {<transition=4, <action=2, <decision=1, <node=1}
+    TOTAL: 8
+  Fluxos/2o Grau/Envio para a CORTSUP.xml -> 
+    XML {<transition=17, <action=20, <decision=4, <node=7}
+    TOTAL: 48
+  Fluxos/2o Grau/Etiquetamento Petição.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/2o Grau/Expedição de Ato Ordinatório.xml -> 
+    XML {<transition=2, <decision=1}
+    TOTAL: 3
+  Fluxos/2o Grau/Integração de Pré-minuta de Relatório ao Sara.xml -> 
+    XML {<condition=3, <transition=30, <task-node=3, <swimlane=3, <variable=5, <action=33, <description=3, <decision=5, <task name=4, <node=3}
+    TOTAL: 92
+  Fluxos/2o Grau/Intimação Física de Pauta de Sessão.xml -> 
+    XML {<description=1}
+    TOTAL: 1
+  Fluxos/2o Grau/PAC - Intimação de Pauta de Sessão de Julgamento.xml -> 
+    XML {<transition=1}
+    TOTAL: 1
+  Fluxos/2o Grau/Precatórios/Análise da Assessoria de Precatórios.xml -> 
+    XML {<transition=1, <action=3, <node=1}
+    TOTAL: 5
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/2o Grau/Precatórios/Preparação de Ato Judicial Gab Presidência.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=12, <description=1, <decision=1, <node=1}
+    TOTAL: 22
+  Fluxos/2o Grau/Precatórios/Preparação de Expedição de Alvará de Precatório - BANKJUS.xml -> 
+    XML {<condition=1, <transition=12, <task-node=2, <swimlane=3, <variable=2, <action=7, <description=2, <decision=2, <task name=3, <node=2}
+    TOTAL: 36
+  Fluxos/2o Grau/Preparação Ato Judicial de Decisão de Agravo Interno.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=14, <decision=1, <node=1}
+    TOTAL: 23
+  Fluxos/2o Grau/Preparação de Ato Judicial Padrão Presidência.xml -> 
+    XML {<condition=2, <transition=6, <variable=1, <action=10, <decision=1, <node=1}
+    TOTAL: 21
+  Fluxos/2o Grau/Preparação de Ato Judicial Padrão Vice Presidência.xml -> 
+    XML {<condition=2, <transition=6, <variable=1, <action=9, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial Sobre Pedido de Uniformização.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=10, <decision=1, <node=1}
+    TOTAL: 19
+  Fluxos/2o Grau/Preparação de Ato Judicial de Decisão da Presidência.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=11, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial de Decisão de Emb. de Declaração.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=11, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial de Decisão de Suspensão ou Sobrestamento.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=11, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial de Decisão de Urgência Inicial.xml -> 
+    XML {<condition=1, <transition=6, <variable=1, <action=10, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial de Decisão de Urgência.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=11, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial de Decisão sobre Reativação.xml -> 
+    XML {<condition=2, <transition=6, <variable=1, <action=10, <description=1, <decision=1, <node=1}
+    TOTAL: 22
+  Fluxos/2o Grau/Preparação de Ato Judicial de Decisão sobre Recurso.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=9, <decision=1, <node=1}
+    TOTAL: 18
+  Fluxos/2o Grau/Preparação de Ato Judicial de Decisão.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=8, <decision=1, <node=1}
+    TOTAL: 17
+  Fluxos/2o Grau/Preparação de Ato Judicial de Despacho Inicial.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=10, <decision=1, <node=1}
+    TOTAL: 19
+  Fluxos/2o Grau/Preparação de Ato Judicial de Despacho da Presidência.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=9, <description=1, <decision=1, <node=1}
+    TOTAL: 19
+  Fluxos/2o Grau/Preparação de Ato Judicial de Despacho de Cumprimento de Sentença.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=11, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial de Despacho.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=11, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial de Regra Geral.xml -> 
+    XML {<condition=1, <transition=6, <variable=1, <action=10, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Preparação de Ato Judicial de Solução de Embargos de Declaração.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=13, <decision=1, <node=1}
+    TOTAL: 22
+  Fluxos/2o Grau/Preparação de Ato Judicial em Órgão Diverso.xml -> 
+    XML {<condition=2, <transition=6, <variable=1, <action=11, <decision=1, <node=1}
+    TOTAL: 22
+  Fluxos/2o Grau/Preparação de Ato Judicial sobre Paradigma Julgado.xml -> 
+    XML {<condition=1, <transition=5, <variable=1, <action=9, <decision=1, <node=1}
+    TOTAL: 18
+  Fluxos/2o Grau/Preparação para Julgamento Colegiado Geral.xml -> 
+    XML {<condition=1, <transition=5, <action=12, <decision=1, <node=1}
+    TOTAL: 20
+  Fluxos/2o Grau/Remessa de Recurso para Tribunal Superior.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 2201
+
+
+
+Mensagem: [#255256] Correção de conflitos de tarefas do bloco 2.4
+Commit: b0f34b707f305c820cac2628490da79fb729725c - Data do commit: 13-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=7, <action=3, <decision=2, <node=1}
+    TOTAL: 13
+  Total de Itens do Commit: 13
+
+
+
+Mensagem: [#255426] corrigindo ação no  fluxo
+Commit: 2b49d5dd42293f7b29171027357d38b1da25ddd9 - Data do commit: 12-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<action=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: [#248091] Correções nos fluxos de expedição de ofício
+Commit: 3d498cd8fbbafeb6054bf60b056340f5c2fa2951 - Data do commit: 12-03-2026
+  Fluxos/1o Grau/Criminal/Expedição de Ofício para Destruição de Drogas.xml -> 
+    XML {<condition=2, <transition=3, <variable=3, <action=4, <task name=1}
+    TOTAL: 13
+  Fluxos/1o Grau/Criminal/Preparação de Ofício para Destruição de Drogas.xml -> 
+    XML {}
+    TOTAL: 0
+  Total de Itens do Commit: 13
+
+
+
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' of https://git.tjce.jus.br/sistemas/PJE into features/#260705_expansao_bloco_2.4_dignidade_sexual_menores
+Commit: 9832394820e440bd41a1666bde2d4ca551320ead - Data do commit: 11-03-2026
+  Fluxos/1o Grau/Criminal/Agendamento de Videoconferência SAV.xml -> 
+    XML {<transition=7, <task-node=1, <swimlane=1, <variable=2, <action=8, <description=2, <task name=2, <node=3}
+    TOTAL: 26
+  Fluxos/1o Grau/Criminal/Aguardo de Manifestação do MP - Crime.xml -> 
+    XML {<condition=4, <transition=20, <task-node=3, <swimlane=3, <variable=1, <action=16, <description=1, <decision=2, <task name=4, <node=5}
+    TOTAL: 59
+  Fluxos/1o Grau/Criminal/Analise de Secretaria - Nucleo de Custodia e Garantias.xml -> 
+    XML {<condition=7, <transition=127, <task-node=3, <swimlane=3, <variable=70, <action=239, <description=3, <decision=5, <task name=4, <node=41}
+    TOTAL: 502
+  Fluxos/1o Grau/Criminal/Análise de Processos Incidentais.xml -> 
+    XML {<transition=1, <action=7}
+    TOTAL: 8
+  Fluxos/1o Grau/Criminal/Análise de Secretaria - Crime Comum.xml -> 
+    XML {<condition=17, <transition=135, <task-node=3, <swimlane=3, <variable=89, <action=261, <description=3, <decision=5, <task name=4, <node=42}
+    TOTAL: 562
+  Fluxos/1o Grau/Criminal/Análise de Transitado em Julgado Criminal.xml -> 
+    XML {<condition=1, <transition=14, <task-node=2, <swimlane=2, <variable=5, <action=16, <description=2, <decision=1, <task name=3, <node=5}
+    TOTAL: 51
+  Fluxos/1o Grau/Criminal/Análise de Triagem Inicial - Juízo das Garantias.xml -> 
+    XML {<condition=1, <transition=8, <task-node=2, <swimlane=2, <variable=2, <action=3, <description=1, <task name=3, <node=2}
+    TOTAL: 24
+  Fluxos/1o Grau/Criminal/Análise de Triagem Inicial - Medidas Cautelares e Garantidoras.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Criminal/Arquivamento Provisório - Aguardando Captura de Réu Condenado.xml -> 
+    XML {<condition=6, <transition=31, <task-node=5, <swimlane=3, <variable=7, <action=21, <description=3, <decision=1, <task name=6, <node=7}
+    TOTAL: 90
+  Fluxos/1o Grau/Criminal/Certificação de Antecedentes Penais.xml -> 
+    XML {<condition=2, <transition=14, <task-node=2, <swimlane=2, <variable=4, <action=21, <description=2, <decision=2, <task name=3, <node=4}
+    TOTAL: 56
+  Fluxos/1o Grau/Criminal/Certificação de Decurso de Prazo Padrão.xml -> 
+    XML {<condition=3, <transition=13, <task-node=3, <swimlane=2, <variable=2, <action=12, <description=1, <task name=4, <node=2}
+    TOTAL: 42
+  Fluxos/1o Grau/Criminal/Certificação de Sentença Condenatória.xml -> 
+    XML {<condition=1, <transition=19, <task-node=2, <swimlane=1, <variable=3, <action=19, <description=2, <decision=5, <task name=3, <node=4}
+    TOTAL: 59
+  Fluxos/1o Grau/Criminal/Certificação de Trânsito em Julgado Criminal.xml -> 
+    XML {<condition=3, <transition=17, <task-node=3, <swimlane=2, <variable=2, <action=15, <description=2, <task name=4, <node=6}
+    TOTAL: 54
+  Fluxos/1o Grau/Criminal/Comunicação aos Órgãos de Estatística Pol.xml -> 
+    XML {<condition=1, <transition=25, <task-node=2, <swimlane=1, <variable=6, <action=26, <description=3, <decision=7, <task name=3, <node=6}
+    TOTAL: 80
+  Fluxos/1o Grau/Criminal/Comunicação de Suspensão de Direitos Políticos.xml -> 
+    XML {<condition=1, <transition=19, <task-node=2, <swimlane=1, <variable=3, <action=20, <description=3, <decision=5, <task name=3, <node=4}
+    TOTAL: 61
+  Fluxos/1o Grau/Criminal/Conferência de Expedientes Pós Trânsito.xml -> 
+    XML {<condition=1, <transition=10, <task-node=2, <swimlane=1, <variable=3, <action=10, <description=3, <decision=1, <task name=3, <node=3}
+    TOTAL: 37
+  Fluxos/1o Grau/Criminal/Controle de Prazo de Prisão.xml -> 
+    XML {<condition=5, <transition=31, <task-node=5, <swimlane=2, <variable=8, <action=46, <description=5, <decision=3, <task name=6, <node=6}
+    TOTAL: 117
+  Fluxos/1o Grau/Criminal/Controle de prazo diverso.xml -> 
+    XML {<condition=1, <transition=23, <task-node=3, <swimlane=2, <variable=6, <action=49, <description=3, <decision=1, <task name=4, <node=8}
+    TOTAL: 100
+  Fluxos/1o Grau/Criminal/Designação de Audiência Criminal.xml -> 
+    XML {<condition=1, <transition=14, <task-node=1, <swimlane=2, <variable=1, <action=15, <description=1, <decision=1, <task name=2, <node=4}
+    TOTAL: 42
+  Fluxos/1o Grau/Criminal/Destinação de Provas Bélicas.xml -> 
+    XML {<condition=1, <transition=25, <task-node=2, <swimlane=1, <variable=6, <action=27, <description=3, <decision=7, <task name=3, <node=6}
+    TOTAL: 81
+  Fluxos/1o Grau/Criminal/Distribuição por Competência de Crimes Envolvendo Menores.xml -> 
+    XML {<transition=21, <swimlane=1, <action=6, <description=1, <decision=7, <task name=1, <node=6}
+    TOTAL: 43
+  Fluxos/1o Grau/Criminal/Distribuição por classe - Custódia e Juízo das Garantias.xml -> 
+    XML {<transition=15, <task-node=1, <swimlane=2, <action=15, <description=1, <decision=4, <task name=2, <node=5}
+    TOTAL: 45
+  Fluxos/1o Grau/Criminal/Elaboração de Cálculo de Multa.xml -> 
+    XML {<condition=3, <transition=20, <task-node=3, <swimlane=3, <variable=3, <action=16, <description=3, <decision=3, <task name=4, <node=4}
+    TOTAL: 62
+  Fluxos/1o Grau/Criminal/Elaboração de Informações de HC.xml -> 
+    XML {<condition=1, <transition=9, <task-node=3, <swimlane=2, <variable=5, <action=13, <description=2, <task name=4, <node=3}
+    TOTAL: 42
+  Fluxos/1o Grau/Criminal/Encaminhar por Classe Judicial Crime.xml -> 
+    XML {<transition=9, <task-node=1, <swimlane=1, <action=3, <description=1, <decision=2, <task name=1, <node=3}
+    TOTAL: 21
+  Fluxos/1o Grau/Criminal/Execução de Expedientes Pós Trânsito - Criminal.xml -> 
+    XML {<condition=1, <transition=35, <task-node=2, <swimlane=2, <variable=9, <action=20, <description=2, <decision=10, <task name=3, <node=9}
+    TOTAL: 93
+  Fluxos/1o Grau/Criminal/Expedição de Ato Ordinatório Criminal.xml -> 
+    XML {<condition=2, <transition=25, <task-node=6, <swimlane=2, <variable=17, <action=36, <description=7, <decision=3, <task name=7, <node=6}
+    TOTAL: 111
+  Fluxos/1o Grau/Criminal/Expedição de Mandados a Órgãos Externos (sem CEMAN).xml -> 
+    XML {<condition=7, <transition=35, <task-node=6, <swimlane=3, <variable=9, <action=23, <description=3, <decision=4, <task name=7, <node=5}
+    TOTAL: 102
+  Fluxos/1o Grau/Criminal/Intimação AP.xml -> 
+    XML {<condition=1, <transition=17, <task-node=2, <swimlane=2, <action=9, <description=1, <task name=3, <node=7}
+    TOTAL: 42
+  Fluxos/1o Grau/Criminal/Intimação Automática Padrão.xml -> 
+    XML {<transition=7, <task-node=1, <swimlane=2, <action=10, <description=1, <decision=1, <task name=2, <node=3}
+    TOTAL: 27
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento Tráfico de Drogas.xml -> 
+    XML {<condition=1, <transition=23, <task-node=2, <swimlane=3, <variable=2, <action=31, <description=2, <decision=3, <task name=3, <node=8}
+    TOTAL: 78
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento VDOC.xml -> 
+    XML {<condition=1, <transition=23, <task-node=2, <swimlane=3, <variable=2, <action=39, <description=2, <decision=3, <task name=3, <node=8}
+    TOTAL: 86
+  Fluxos/1o Grau/Criminal/Operação de Audiência Criminal.xml -> 
+    XML {<transition=16, <task-node=1, <swimlane=1, <variable=3, <action=15, <description=2, <decision=1, <task name=2, <node=6}
+    TOTAL: 47
+  Fluxos/1o Grau/Criminal/Preparação Padrão de Ato Judicial Criminal.xml -> 
+    XML {<condition=11, <transition=42, <task-node=3, <swimlane=2, <variable=26, <action=60, <description=4, <decision=7, <task name=4, <node=9}
+    TOTAL: 168
+  Fluxos/1o Grau/Criminal/Preparação Padrão de Ato Judicial Múltiplas Assinaturas.xml -> 
+    XML {<transition=3, <variable=1, <action=9, <decision=1, <node=1}
+    TOTAL: 15
+  Fluxos/1o Grau/Criminal/Preparação de Audiências de Custodia.xml -> 
+    XML {<transition=5, <swimlane=1, <action=8, <description=1, <task name=1, <node=4}
+    TOTAL: 20
+  Fluxos/1o Grau/Criminal/Protocolo de Processos de Juízo de Conhecimento.xml -> 
+    XML {<transition=21, <task-node=1, <swimlane=1, <variable=2, <action=37, <description=2, <decision=3, <task name=2, <node=9}
+    TOTAL: 78
+  Fluxos/1o Grau/Criminal/Realização de Audiência Criminal.xml -> 
+    XML {<condition=1, <transition=17, <task-node=3, <swimlane=1, <variable=9, <action=33, <description=3, <decision=2, <task name=4, <node=5}
+    TOTAL: 78
+  Fluxos/1o Grau/Criminal/Remessa ao SEEU.xml -> 
+    XML {<condition=1, <transition=7, <task-node=2, <swimlane=1, <variable=1, <action=4, <description=2, <task name=3, <node=1}
+    TOTAL: 22
+  Fluxos/1o Grau/Criminal/Sinalização Acordo de Não-Persecução Penal.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Denúncia.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Manifestação AP-MP.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Manifestação MP-AP.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Manifestação da AP para o Juízo.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Manifestação do MP para o Juízo.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Promoção MP Pedido de Arquivamento.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Tramitação Direta entre MP e AP.xml -> 
+    XML {<condition=1, <transition=14, <task-node=2, <swimlane=2, <action=17, <description=1, <task name=3, <node=7}
+    TOTAL: 47
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=12, <action=6, <decision=4, <node=4}
+    TOTAL: 26
+  Fluxos/1o Grau/Geral/Encaminhamento para Fluxo de Análise.xml -> 
+    XML {<transition=11, <action=1, <decision=6, <node=2}
+    TOTAL: 20
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<condition=6, <transition=17, <task-node=1, <swimlane=1, <action=8, <decision=1, <task name=2}
+    TOTAL: 36
+  Total de Itens do Commit: 3459
+
+
+
+Mensagem: [#248091] Commit inicial para a criação dos rascunhos das classes
+Commit: 87e678fbb335e588b52a74a99b71ff39d44a5328 - Data do commit: 11-03-2026
+  Rascunhos_Fluxos/Expedição de Ofício para Destruição de Drogas.xml -> 
+    XML {<condition=10, <transition=49, <task-node=6, <swimlane=5, <variable=12, <action=37, <description=1, <decision=6, <task name=8, <node=9}
+    TOTAL: 143
+  Rascunhos_Fluxos/Preparação de Ofício para Destruição de Drogas.xml -> 
+    XML {<transition=9, <task-node=1, <swimlane=4, <variable=1, <action=6, <description=2, <decision=2, <task name=2, <node=2}
+    TOTAL: 29
+  Total de Itens do Commit: 172
+
+
+
+Mensagem: [#255426] ajuste de script
+Commit: d09711de55de8c302100a56644c218d922a30f17 - Data do commit: 10-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: Merge branch 'features/#260705_bloco_24_crianca_adolecente' into 'ambientes/projeto-hml-2609'
+Commit: 1bf1be4e4bdf302b786511cffe9ef376d7b02968 - Data do commit: 10-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: [#255426] declarando variável iteração da validação
+Commit: 054857230677b72b8fc46dcc83b17237114ae4df - Data do commit: 10-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: Merge branch 'features/#260705_bloco_24_crianca_adolecente' into 'ambientes/projeto-hml-2609'
+Commit: c662680ea98979f445300b93a477a02e56f4dada - Data do commit: 10-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: [#255426] declarando variável iteração
+Commit: aa523592a02279f8e433b2fb3fdfad8bb3aa9bbc - Data do commit: 10-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: [#255426] ajuste em transição com problema
+Commit: 7b76a33c5724f822429f401a6e54bfab66c134e0 - Data do commit: 10-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=5, <action=2, <decision=1, <node=1}
+    TOTAL: 9
+  Total de Itens do Commit: 9
+
+
+
+Mensagem: [#255426] ajuste em transição com problema
+Commit: ceb3db2566213c7390a0a56bba2d3c55b488634b - Data do commit: 10-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=1}
+    TOTAL: 1
+  Total de Itens do Commit: 1
+
+
+
+Mensagem: [#255426] concluindo o refactoring e integrando a distribuição dos crimes contra criança e adolescente
+Commit: 0df32bc0887ff4d70a5e98037250936662b840a2 - Data do commit: 09-03-2026
+  Fluxos/1o Grau/Criminal/Distribuição por Competência de Crimes Envolvendo Menores.xml -> 
+    XML {<transition=11, <action=3, <description=1, <decision=3, <node=4}
+    TOTAL: 22
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=3, <action=2, <node=2}
+    TOTAL: 7
+  Total de Itens do Commit: 33
+
+
+
+Mensagem: [#255426] definindo configurações para entrar na distribuição da competencia de crime contra a dignidade sexual de menores
+Commit: 6ff2808f1eabfb8f895b3f28ccbf54e3226a15d1 - Data do commit: 09-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=6, <action=1, <decision=1, <node=1}
+    TOTAL: 9
+  Total de Itens do Commit: 9
+
+
+
+Mensagem: Merge branch 'ambientes/projeto-hml-2609' into features/#260705_bloco_24_crianca_adolecente
+Commit: e024470d8ed35408c14530a6c84953c76434d217 - Data do commit: 09-03-2026
+  Fluxos/1o Grau/Criminal/Agendamento de Videoconferência SAV.xml -> 
+    XML {<transition=7, <task-node=1, <swimlane=1, <variable=2, <action=8, <description=2, <task name=2, <node=3}
+    TOTAL: 26
+  Fluxos/1o Grau/Criminal/Aguardo de Manifestação do MP - Crime.xml -> 
+    XML {<condition=4, <transition=20, <task-node=3, <swimlane=3, <variable=1, <action=16, <description=1, <decision=2, <task name=4, <node=5}
+    TOTAL: 59
+  Fluxos/1o Grau/Criminal/Analise de Secretaria - Nucleo de Custodia e Garantias.xml -> 
+    XML {<condition=7, <transition=127, <task-node=3, <swimlane=3, <variable=70, <action=239, <description=3, <decision=5, <task name=4, <node=41}
+    TOTAL: 502
+  Fluxos/1o Grau/Criminal/Análise de Processos Incidentais.xml -> 
+    XML {<action=7}
+    TOTAL: 7
+  Fluxos/1o Grau/Criminal/Análise de Secretaria - Crime Comum.xml -> 
+    XML {<condition=17, <transition=135, <task-node=3, <swimlane=3, <variable=89, <action=261, <description=3, <decision=5, <task name=4, <node=42}
+    TOTAL: 562
+  Fluxos/1o Grau/Criminal/Análise de Secretaria - Crimes contra Criança e Adolescente.xml -> 
+    XML {<transition=8, <task-node=1, <swimlane=4, <action=5, <decision=4, <task name=2, <node=1}
+    TOTAL: 25
+  Fluxos/1o Grau/Criminal/Análise de Transitado em Julgado Criminal.xml -> 
+    XML {<condition=1, <transition=14, <task-node=2, <swimlane=2, <variable=5, <action=16, <description=2, <decision=1, <task name=3, <node=5}
+    TOTAL: 51
+  Fluxos/1o Grau/Criminal/Análise de Triagem Inicial - Juízo das Garantias.xml -> 
+    XML {<condition=1, <transition=8, <task-node=2, <swimlane=2, <variable=2, <action=3, <description=1, <task name=3, <node=2}
+    TOTAL: 24
+  Fluxos/1o Grau/Criminal/Análise de Triagem Inicial - Medidas Cautelares e Garantidoras.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Fluxos/1o Grau/Criminal/Arquivamento Provisório - Aguardando Captura de Réu Condenado.xml -> 
+    XML {<condition=6, <transition=31, <task-node=5, <swimlane=3, <variable=7, <action=21, <description=3, <decision=1, <task name=6, <node=7}
+    TOTAL: 90
+  Fluxos/1o Grau/Criminal/Certificação de Antecedentes Penais.xml -> 
+    XML {<condition=2, <transition=14, <task-node=2, <swimlane=2, <variable=4, <action=21, <description=2, <decision=2, <task name=3, <node=4}
+    TOTAL: 56
+  Fluxos/1o Grau/Criminal/Certificação de Decurso de Prazo Padrão.xml -> 
+    XML {<condition=3, <transition=13, <task-node=3, <swimlane=2, <variable=2, <action=12, <description=1, <task name=4, <node=2}
+    TOTAL: 42
+  Fluxos/1o Grau/Criminal/Certificação de Sentença Condenatória.xml -> 
+    XML {<condition=1, <transition=19, <task-node=2, <swimlane=1, <variable=3, <action=19, <description=2, <decision=5, <task name=3, <node=4}
+    TOTAL: 59
+  Fluxos/1o Grau/Criminal/Certificação de Trânsito em Julgado Criminal.xml -> 
+    XML {<condition=3, <transition=17, <task-node=3, <swimlane=2, <variable=2, <action=15, <description=2, <task name=4, <node=6}
+    TOTAL: 54
+  Fluxos/1o Grau/Criminal/Comunicação aos Órgãos de Estatística Pol.xml -> 
+    XML {<condition=1, <transition=25, <task-node=2, <swimlane=1, <variable=6, <action=26, <description=3, <decision=7, <task name=3, <node=6}
+    TOTAL: 80
+  Fluxos/1o Grau/Criminal/Comunicação de Suspensão de Direitos Políticos.xml -> 
+    XML {<condition=1, <transition=19, <task-node=2, <swimlane=1, <variable=3, <action=20, <description=3, <decision=5, <task name=3, <node=4}
+    TOTAL: 61
+  Fluxos/1o Grau/Criminal/Conferência de Expedientes Pós Trânsito.xml -> 
+    XML {<condition=1, <transition=10, <task-node=2, <swimlane=1, <variable=3, <action=10, <description=3, <decision=1, <task name=3, <node=3}
+    TOTAL: 37
+  Fluxos/1o Grau/Criminal/Controle de Prazo de Prisão.xml -> 
+    XML {<condition=5, <transition=31, <task-node=5, <swimlane=2, <variable=8, <action=46, <description=5, <decision=3, <task name=6, <node=6}
+    TOTAL: 117
+  Fluxos/1o Grau/Criminal/Controle de prazo diverso.xml -> 
+    XML {<condition=1, <transition=23, <task-node=3, <swimlane=2, <variable=6, <action=49, <description=3, <decision=1, <task name=4, <node=8}
+    TOTAL: 100
+  Fluxos/1o Grau/Criminal/Designação de Audiência Criminal.xml -> 
+    XML {<condition=1, <transition=14, <task-node=1, <swimlane=2, <variable=1, <action=15, <description=1, <decision=1, <task name=2, <node=4}
+    TOTAL: 42
+  Fluxos/1o Grau/Criminal/Destinação de Provas Bélicas.xml -> 
+    XML {<condition=1, <transition=25, <task-node=2, <swimlane=1, <variable=6, <action=27, <description=3, <decision=7, <task name=3, <node=6}
+    TOTAL: 81
+  Fluxos/1o Grau/Criminal/Distribuição por classe - Custódia e Juízo das Garantias.xml -> 
+    XML {<transition=15, <task-node=1, <swimlane=2, <action=15, <description=1, <decision=4, <task name=2, <node=5}
+    TOTAL: 45
+  Fluxos/1o Grau/Criminal/Elaboração de Cálculo de Multa.xml -> 
+    XML {<condition=3, <transition=20, <task-node=3, <swimlane=3, <variable=3, <action=16, <description=3, <decision=3, <task name=4, <node=4}
+    TOTAL: 62
+  Fluxos/1o Grau/Criminal/Elaboração de Informações de HC.xml -> 
+    XML {<condition=1, <transition=9, <task-node=3, <swimlane=2, <variable=5, <action=13, <description=2, <task name=4, <node=3}
+    TOTAL: 42
+  Fluxos/1o Grau/Criminal/Encaminhar por Classe Judicial Crime.xml -> 
+    XML {<transition=9, <task-node=1, <swimlane=1, <action=3, <description=1, <decision=2, <task name=1, <node=3}
+    TOTAL: 21
+  Fluxos/1o Grau/Criminal/Execução de Expedientes Pós Trânsito - Criminal.xml -> 
+    XML {<condition=1, <transition=35, <task-node=2, <swimlane=2, <variable=9, <action=20, <description=2, <decision=10, <task name=3, <node=9}
+    TOTAL: 93
+  Fluxos/1o Grau/Criminal/Expedição de Ato Ordinatório Criminal.xml -> 
+    XML {<condition=2, <transition=25, <task-node=6, <swimlane=2, <variable=17, <action=36, <description=7, <decision=3, <task name=7, <node=6}
+    TOTAL: 111
+  Fluxos/1o Grau/Criminal/Expedição de Mandados a Órgãos Externos (sem CEMAN).xml -> 
+    XML {<condition=7, <transition=35, <task-node=6, <swimlane=3, <variable=9, <action=23, <description=3, <decision=4, <task name=7, <node=5}
+    TOTAL: 102
+  Fluxos/1o Grau/Criminal/Intimação AP.xml -> 
+    XML {<condition=1, <transition=17, <task-node=2, <swimlane=2, <action=9, <description=1, <task name=3, <node=7}
+    TOTAL: 42
+  Fluxos/1o Grau/Criminal/Intimação Automática Padrão.xml -> 
+    XML {<transition=7, <task-node=1, <swimlane=2, <action=10, <description=1, <decision=1, <task name=2, <node=3}
+    TOTAL: 27
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento Crime Contra Criança e Adolescente.xml -> 
+    XML {<condition=1, <transition=26, <task-node=2, <swimlane=3, <variable=2, <action=48, <description=2, <decision=4, <task name=3, <node=9}
+    TOTAL: 100
+  Fluxos/1o Grau/Criminal/Juízo de Conhecimento VDOC.xml -> 
+    XML {<condition=1, <transition=23, <task-node=2, <swimlane=3, <variable=2, <action=39, <description=2, <decision=3, <task name=3, <node=8}
+    TOTAL: 86
+  Fluxos/1o Grau/Criminal/Operação de Audiência Criminal.xml -> 
+    XML {<transition=16, <task-node=1, <swimlane=1, <variable=3, <action=15, <description=2, <decision=1, <task name=2, <node=6}
+    TOTAL: 47
+  Fluxos/1o Grau/Criminal/Preparação Padrão de Ato Judicial Criminal.xml -> 
+    XML {<condition=11, <transition=42, <task-node=3, <swimlane=2, <variable=26, <action=60, <description=4, <decision=7, <task name=4, <node=9}
+    TOTAL: 168
+  Fluxos/1o Grau/Criminal/Preparação Padrão de Ato Judicial Múltiplas Assinaturas.xml -> 
+    XML {<transition=3, <variable=1, <action=9, <decision=1, <node=1}
+    TOTAL: 15
+  Fluxos/1o Grau/Criminal/Preparação de Audiências de Custodia.xml -> 
+    XML {<transition=5, <swimlane=1, <action=8, <description=1, <task name=1, <node=4}
+    TOTAL: 20
+  Fluxos/1o Grau/Criminal/Protocolo de Processos de Juízo de Conhecimento.xml -> 
+    XML {<transition=21, <task-node=1, <swimlane=1, <variable=2, <action=37, <description=2, <decision=3, <task name=2, <node=9}
+    TOTAL: 78
+  Fluxos/1o Grau/Criminal/Realização de Audiência Criminal.xml -> 
+    XML {<condition=1, <transition=17, <task-node=3, <swimlane=1, <variable=9, <action=33, <description=3, <decision=2, <task name=4, <node=5}
+    TOTAL: 78
+  Fluxos/1o Grau/Criminal/Remessa ao SEEU.xml -> 
+    XML {<condition=1, <transition=7, <task-node=2, <swimlane=1, <variable=1, <action=4, <description=2, <task name=3, <node=1}
+    TOTAL: 22
+  Fluxos/1o Grau/Criminal/Sinalização Acordo de Não-Persecução Penal.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Denúncia.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Manifestação AP-MP.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Manifestação MP-AP.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Manifestação da AP para o Juízo.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Manifestação do MP para o Juízo.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Sinalização Promoção MP Pedido de Arquivamento.xml -> 
+    XML {<transition=3, <task-node=1, <swimlane=2, <action=1, <description=1, <task name=2, <node=1}
+    TOTAL: 11
+  Fluxos/1o Grau/Criminal/Tramitação Direta entre MP e AP.xml -> 
+    XML {<condition=1, <transition=14, <task-node=2, <swimlane=2, <action=17, <description=1, <task name=3, <node=7}
+    TOTAL: 47
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=5, <action=2, <decision=2, <node=1}
+    TOTAL: 10
+  Fluxos/1o Grau/Geral/Encaminhamento para Fluxo de Análise.xml -> 
+    XML {<transition=15, <action=3, <decision=7, <node=3}
+    TOTAL: 28
+  Total de Itens do Commit: 3410
+
+
+
+Mensagem: [#255426] Alterações iniciais para entrar na distribuição da competencia de crime contra a dignidade sexual de menores
+Commit: 0d962fdb31253bcf6ef39c2443c3caf2c250da98 - Data do commit: 09-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=5, <action=1, <decision=1}
+    TOTAL: 7
+  Total de Itens do Commit: 7
+
+
+
+Mensagem: [#246843] Ajuste de nomenclatura dos arquivos de script
+Commit: 1542bf66f153033c55ed1d4ab634eedb19697dfd - Data do commit: 06-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: Merge branch 'feature/#166992_expedicao_alvara_eletronico_integracao_bankjus' into 'releases/rc_bastia_20260307'
+Commit: 55743f7b3c3861ceede5704f14b0411be7c197db - Data do commit: 06-03-2026
+  Fluxos/2o Grau/Precatórios/Análise da Assessoria de Precatórios.xml -> 
+    XML {<transition=1, <variable=1}
+    TOTAL: 2
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Total de Itens do Commit: 4
+
+
+
+Mensagem: [#166992] Ajustes para atualização do status do alvará e encaminhar o alvara para o banco
+Commit: bde2d849124becec2c3a7d77bc218749a0e6098e - Data do commit: 06-03-2026
+  Fluxos/2o Grau/Precatórios/Análise da Assessoria de Precatórios.xml -> 
+    XML {<transition=1, <variable=1}
+    TOTAL: 2
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Total de Itens do Commit: 4
+
+
+
+Mensagem: Merge branch 'feature/#166992_expedicao_alvara_eletronico_integracao_bankjus' into 'releases/rc_bastia_20260307'
+Commit: beb2ed86b0e17e26954b44add3ebad1502a15997 - Data do commit: 06-03-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Total de Itens do Commit: 2
+
+
+
+Mensagem: [#246843] Ajuste de nomenclatura dos arquivos de script
+Commit: a28cf7e4dd767c911a29e61c8a512fd2e2ed8d3d - Data do commit: 05-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: [#166992] Ajustes para atualização do status do alvará
+Commit: 16af8e652d0a3a31e1fd443fc7e468bd94082d6f - Data do commit: 05-03-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<action=2}
+    TOTAL: 2
+  Total de Itens do Commit: 2
+
+
+
+Mensagem: [#249800] Adptação do fluxo para competência de "Delitos de Tráfico de Drogas"
+Commit: 3f4e88334c9139acfe8d776c399c1d75b2291e3e - Data do commit: 04-03-2026
+  Fluxos/1o Grau/Criminal/Análise de Processos Incidentais.xml -> 
+    XML {<transition=1}
+    TOTAL: 1
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=5, <action=3, <decision=2, <node=2}
+    TOTAL: 12
+  Total de Itens do Commit: 17
+
+
+
+Mensagem: [#246843] Ajuste de nomenclatura
+Commit: 144c5d75879912fed4122ee8cda2269818ccf6f6 - Data do commit: 04-03-2026
+(Commit sem alteração de Fluxos JBPM)
+
+
+
+Mensagem: merge de atualização com a branch projeto-hml
+Commit: 06e78dbf4075fd95a0a7d089c1950c6e3bd5f321 - Data do commit: 04-03-2026
+  Fluxos/1o Grau/Criminal/Análise de Secretaria - Violência Doméstica.xml -> 
+    XML {<condition=1, <transition=3, <variable=2, <action=6}
+    TOTAL: 12
+  Fluxos/1o Grau/Criminal/Análise de Secretaria Medida Protetiva de Urgência.xml -> 
+    XML {<transition=6, <variable=4, <action=8, <node=2}
+    TOTAL: 20
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=12, <action=4, <decision=4, <node=3}
+    TOTAL: 23
+  Fluxos/1o Grau/Geral/Encaminhamento para Fluxo de Análise.xml -> 
+    XML {<transition=10, <action=2, <description=1, <decision=6, <node=2}
+    TOTAL: 21
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<condition=6, <transition=17, <task-node=1, <swimlane=1, <action=8, <decision=1, <task name=2}
+    TOTAL: 36
+  Total de Itens do Commit: 115
+
+
+
+Mensagem: [#166992] Ajustes na visibilidade
+Commit: 0e67c651bfc3843e7351b6e9ed36c4fe9b8c544f - Data do commit: 03-03-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<condition=6, <transition=15, <task-node=1, <swimlane=1, <action=7, <task name=2}
+    TOTAL: 32
+  Total de Itens do Commit: 32
+
+
+
+Mensagem: [#246843] Commit final com a criação do fluxo de distribuição
+Commit: aebe4ee46d3c5e6cbc7cb2a0f813c7e671bb354b - Data do commit: 03-03-2026
+  Fluxos/1o Grau/Criminal/Distribuição na Competência de Crimes contra Crianças e Adolescentes.xml -> 
+    XML {<transition=14, <swimlane=1, <action=5, <description=1, <decision=4, <task name=1, <node=5}
+    TOTAL: 31
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=3, <action=1, <decision=1, <node=1}
+    TOTAL: 6
+  Total de Itens do Commit: 37
+
+
+
+Mensagem: [#166992] Ajustes no hub de direcionamento de tarefas
+Commit: 19722a2d0adb6437cdd58ebb4821df55a230a03d - Data do commit: 03-03-2026
+  Fluxos/2o Grau/Precatórios/Expedição de Alvará Eletrônico de Precatório via BankJus.xml -> 
+    XML {<transition=2, <action=1, <decision=1}
+    TOTAL: 4
+  Total de Itens do Commit: 4
+
+
+
+Mensagem: [#246843] Criação dos parâmetros e ajustes iniciais
+Commit: 689b6879cc1bf963f5bf1096b50791ddf86a8912 - Data do commit: 03-03-2026
+  Fluxos/1o Grau/Geral/Distribuição por Competência.xml -> 
+    XML {<transition=2, <decision=1}
+    TOTAL: 3
+  Total de Itens do Commit: 9
+
+
+
+----------------------------------------- Processamento de Scripts -----------------------------------------------
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' into 'ambientes/projeto-hml-2609'
+Commit: 03d5483a8cf9fbaa5b3e35e3145317f186cca186 - Data do commit: 27-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] Correção no redirecionamento do fluxo de saída para casos com criança e adolescente
+Commit: 5cd707a651aac82375d279c0a7403655e679eab9 - Data do commit: 27-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] Alteração de regra de negócio para habeas corpus criminal
+Commit: 286de16ca597194cdda493fa6b8b2cbedcf6a118 - Data do commit: 27-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] [item 67] Alterando fluxo de saída conforme requisitado pelo analista de negócio
+Commit: 35e5eb4eed9e4f0c1cd87d986c9d63f9aba8b480 - Data do commit: 27-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] Correção dos ids das classes a serem parametrizadas II
+Commit: 1a8fcd381b6354c27065184f38a1d18e0ebd4a09 - Data do commit: 26-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_classe_judicial
+  Scripts/2026/246843/PJE_FLX_ANT_VALIDACAO_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_classe_judicial
+    - consultar a entidade core.tb_parametro
+  Total de Itens do Commit: 3
+
+
+
+Mensagem: [#255426] Correção dos ids das classes a serem parametrizadas
+Commit: 8c6a1663858f488aa8455548c591e36af8a10f4d - Data do commit: 26-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_classejudicial
+    - consultar a entidade core.tb_parametro
+    - alterar a entidade core.tb_parametro
+  Total de Itens do Commit: 3
+
+
+
+Mensagem: [#251149] Commit inicial do Fluxo de Preparação de Ato Judicial de Atos Preparatórios para Sessão do Júri
+Commit: d7b4295bddd2f48e1859cd52d7ef1a69c870b069 - Data do commit: 26-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#248091] Ajuste para exibir o botão de assinatura na tarefa de expedição
+Commit: d02de0cc844223b96711a8a87c1c11805784e93e - Data do commit: 24-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255256] Melhoria no script de verificar filhas de uma classe
+Commit: 9096b5028341409c995bb5372ed760ce33a4d48e - Data do commit: 24-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+    - consultar a entidade core.tb_parametro
+    - alterar a entidade core.tb_parametro
+  Scripts/2026/249800/PJE_FLX_ANT_001_1G_249800_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade arvore_classes
+    - consultar a entidade tb_classe_judicial
+  Total de Itens do Commit: 274
+
+
+
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' into 'ambientes/projeto-hml-2609'
+Commit: ed1fbf12f296f9473f19f9c0d4adbbbb50f3374a - Data do commit: 18-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+    - consultar a entidade 1
+  Total de Itens do Commit: 5
+
+
+
+Mensagem: [#255426] Correção em EL e parametro
+Commit: 4061ce22de52ad41dd2332a6c5de80477376bc8c - Data do commit: 18-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+    - consultar a entidade 1
+  Total de Itens do Commit: 5
+
+
+
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' into 'ambientes/projeto-hml-2609'
+Commit: 56b7be798ce625f901d1252651ceec0131af146f - Data do commit: 18-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] Colocando o código da classe 316 corretamente
+Commit: 883d8f9fd86f77c06ae1bcbf1880526defdca533 - Data do commit: 18-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' of https://git.tjce.jus.br/sistemas/PJE into features/#260705_expansao_bloco_2.4_dignidade_sexual_menores
+Commit: 201ee6b94acb1359302e9d10bfa9269e063048c3 - Data do commit: 18-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#248091] Criação do script de configuração de label
+Commit: 4ae2d9991c6a4a47691c565ffb9710377b71a110 - Data do commit: 18-03-2026
+  Scripts/2026/248091/PJE_FLX_ANT_001_1G_248091_criacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/248091/PJE_FLX_ANT_VALIDACAO_001_1G_248091_criacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Total de Itens do Commit: 3
+
+
+
+Mensagem: [#255256] Ajuste apenas da nomenclatura do método
+Commit: 6b67762857912351e2d1114f194ca7d00ebf8491 - Data do commit: 18-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255256] Ajuste apenas da nomenclatura do método
+Commit: a7c26d69a3e5dd84cc3ad3c0dfa1fabb51474603 - Data do commit: 18-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] Ajustes na distribuição para identificar corretamente a competência de crimes contra a diginidade de menores
+Commit: 1869765cfec5c5a67a5ba5288eaca792d223ef53 - Data do commit: 17-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#248091] Correção de sintaxe
+Commit: b1d33cdc99b6e01826298c5a8a313d8f8dda7e0c - Data do commit: 16-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#248091] Remoção de tarefa desnecessária
+Commit: 57541c2844149d7ae54510f2a8dc48f741963815 - Data do commit: 16-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#248091] Adaptação para o fluxo de conferir expedientes pos trânsito
+Commit: a5194f2d781b5833536b20f255cb3f1f4bd9eff4 - Data do commit: 16-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255256] Resolvendo conflitos gerais
+Commit: 2e48ac85a379f9afccfc8e1df8e1e35b295f4ca8 - Data do commit: 13-03-2026
+  Scripts/2024/166992/PJE_FLX_ANT_001_2G_166992_criar_labels_alterar_parametros_expedir_alvara_bankjus.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+    - criar o parÃ¢metro 'pje:tjce:fluxo:bankjus:habilitar:gerarDocumentoCancelamento'
+    - consultar a entidade core.tb_parametro
+    - alterar a entidade core.tb_parametro
+    - criar a entidade tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade core.tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:fluxo:bankjus:idModeloDocumento:alvaraNaoGerado'
+    - criar o parÃ¢metro 'pje:tjce:fluxo:bankjus:idTipoDocumento:alvaraNaoGerado'
+  Scripts/2024/166992/PJE_FLX_VALIDACAO_ANT_001_2G_166922_criar_labels_alterar_parametros_expedir_alvara_bankjus.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade core.tb_modelo_documento
+  Scripts/2025/233920/PJE_FLX_ANT_001_1G_233920_criacao_de_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - criar a entidade core.tb_parametro
+  Scripts/2025/233920/PJE_FLX_VALIDACAO_ANT_001_1G_233920_criacao_de_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/233922/PJE_FLX_ANT_001_1G_233922_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/233922/PJE_FLX_ANT_VALIDACAO_001_1G_233922_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/233932/PJE_FLX_ANT_01_233936_CRIA_PARAMETRO_MODELO_DOCUMENTO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_modelo_documento
+    - criar a entidade core.tb_parametro
+  Scripts/2025/233932/PJE_FLX_ANT__VALIDACAO_01_233936_CRIA_PARAMETRO_MODELO_DOCUMENTO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/233934/PJE_FLX_POS_01_1G_233934_ATRIBUIR_LABEL_REALIZACAO_AUDIENCIA.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233934/PJE_FLX_POS_VALIDACAO_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233935/PJE_FLX_ANT_001_1G_233935_ATUALIZA_PARAMETRO_MAPAOPCOES.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/233935/PJE_FLX_ANT_VALIDACAO_001_1G_233935_ATUALIZA_PARAMETRO_MAPAOPCOES.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/233936/PJE_FLX_ANT_01_233936_CRIA_PARAMETRO_COM_COD_CLASSES_GARANTIAS.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+  Scripts/2025/233936/PJE_FLX_ANT__VALIDACAO_01_233936_CRIA_PARAMETRO_COM_COD_CLASSES_GARANTIAS.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/233936/PJE_FLX_POS_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233936/PJE_FLX_POS_VALIDACAO_01_1G_233936_ATRIBUIR_LABEL_DESIGNACAO_AUDIENCIA.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233941/PJE_FLX_ANT_001_1G_2333941_atualiza_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233941/PJE_FLX_ANT_002_1G_233941_incrementa_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelas'
+    - alterar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelas'
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelasPorLocalizacao'
+    - alterar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelasPorLocalizacao'
+  Scripts/2025/233941/PJE_FLX_ANT_VALIDACAO_001_1G_233941_atualiza_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233941/PJE_FLX_ANT_VALIDACAO_002_1G_233941_incrementa_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelas'
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelasPorLocalizacao'
+  Scripts/2025/233944/PJE_FLX_ANT_001_1G_233944_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233944/PJE_FLX_ANT_002_1G_233944_INCREMENTA_MAPA_OPCOES.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/233944/PJE_FLX_ANT_004_1G_233944_INCREMENTA_PARAMETRO_VERIFICA_OUTROS_FLUXOS.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelas'
+    - alterar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelas'
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelasPorLocalizacao'
+    - alterar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelasPorLocalizacao'
+  Scripts/2025/233944/PJE_FLX_ANT_VALIDACAO_001_1G_233944_CRIA_LABEL_SEC_NUCLEO_CUSTODIA.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233944/PJE_FLX_ANT_VALIDACAO_001_1G_233944_INCREMENTA_MAPA_OPCOES.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro '%pje:tjce:fluxo:mapaOpcoes%'
+  Scripts/2025/233944/PJE_FLX_ANT_VALIDACAO_004_1G_233944_INCREMENTA_PARAMETRO_VERIFICA_OUTROS_FLUXOS.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelas'
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:verificaExistenciaOutrasTarefasParalelasPorLocalizacao'
+  Scripts/2025/233944/PJE_FLX_POS_003_1G_233944_CRIA_LABEL_MINIFLUXO_PRAZO_DIVERSO.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/233944/PJE_FLX_POS_VALIDACAO_003_1G_233944_CRIA_LABEL_MINIFLUXO_PRAZO_DIVERSO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/234664/PJE_FLX_ANT_001_1G_234664_criacao_de_parametro.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+  Scripts/2025/234664/PJE_FLX_ANT_VALIDACAO_001_1G_criacao_de_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:documento:modelo:vistaAutomaticaJuizoAP'
+    - consultar o parÃ¢metro 'pje:tjce:documento:modelo:vistaAutomaticaJuizoMP'
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:idTipoDocumento:notificacaoDeVista'
+  Scripts/2025/235301/PJE_FLX_ANT_001_1G_235301_CRIA_LABELS_PAJ_PADRAO_CRIME.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/235301/PJE_FLX_ANT_VALIDACAO_001_1G_235301_CRIA_LABELS_PAJ_PADRAO_CRIME.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/236218/PJE_FLX_ANT_001_1G_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/236218/PJE_FLX_ANT_002_1G_parametro.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+  Scripts/2025/236218/PJE_FLX_ANT_VALIDACAO_001_1G_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/2025/236218/PJE_FLX_ANT_VALIDACAO_002_1G_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:documento:modelo:vistaAutomaticaMPAP'
+  Scripts/2025/236220/PJE_FLX_ANT_001_1G_236220_criacao_de_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/236220/PJE_FLX_ANT_002_1G_criacao_de_parametro.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+  Scripts/2025/236220/PJE_FLX_ANT_VALIDACAO_001_1G_236220_criacao_de_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/236220/PJE_FLX_ANT_VALIDACAO_002_1G_criacao_de_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:documento:modelo:vistaAutomaticaAPMP'
+    - consultar o parÃ¢metro 'pje:tjce:expediente:destinatario:id:destinatarioAP'
+  Scripts/2025/238020/PJE_FLX_ANT_001_1G_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/238020/PJE_FLX_ANT_002_1G_criacao_parametro.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+  Scripts/2025/238020/PJE_FLX_ANT_VALIDACAO_001_1G_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/238020/PJE_FLX_ANT_VALIDACAO_002_1G_criacao_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:parametro:custodiaEGarantias'
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:parametro:vistaAutomaticaMP5D'
+  Scripts/2025/238747/PJE_FLX_ANT_001_1G_238747_CRIA_PARAMETROS_PARA_DISTRIBUICAO.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2025/238747/PJE_FLX_ANT_VALIDACAO_001_1G_238747_CRIA_PARAMETROS_PARA_DISTRIBUICAO.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2025/238927/PJE_FLX_ANT_001_1G_238927_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/238927/PJE_FLX_ANT_VALIDACAO_001_1G_238927_atualziacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/239155/PJE_FLX_ANT_001_1G_239155_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/239155/PJE_FLX_ANT_VALIDACAO_001_1G_239155_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/239164/PJE_FLX_ANT_001_1G_239164_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/239164/PJE_FLX_ANT_VALIDACAO_ANT_001_1G_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/239400/PJE_FLX_ANT_001_1G_239400_atualizacao_parametro_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/239400/PJE_FLX_ANT_VALIDACAO_001_1G_239400_atualizacao_parametro_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/239405/PJE_FLX_ANT_001_1G_239405_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/239405/PJE_FLX_ANT_VALIDACAO_001_1G_239405_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/239408/PJE_FLX_ANT_001_1G_239408_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/239408/PJE_FLX_ANT_VALIDACAO_001_1G_239408_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/240609/PJE_FLX_ANT_001_1G_24609_criacao_parametro.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+  Scripts/2025/240609/PJE_FLX_ANT_VALIDACAO_1G_001_24609_criacao_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/240613/PJE_FLX_POS_001_1G_240613_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/240613/PJE_FLX_POS_VALIDACAO_001_1G_240613_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade jsonb_array_elements
+  Scripts/2025/240820/PJE_FLX_POS_001_1G_240820_configuracao_parametros_e_labels.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/240820/PJE_FLX_POS_VALIDACAO_001_1G_240820_configuracao_parametros_e_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade jsonb_array_elements
+  Scripts/2025/240823/PJE_FLX_POS_001_1G_240823_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/240823/PJE_FLX_POS_VALIDACAO_001_1G_240823_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade jsonb_array_elements
+  Scripts/2025/240827/PJE_FLX_ANT_001_1G_240827_atualiza_labels_e_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_usuario_login
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/240827/PJE_FLX_ANT_VALIDACAO_001_1G_240827_atualiza_labels_e_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_usuario_login
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/241412/PJE_FLX_POS_001_1G_241412_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/241412/PJE_FLX_POS_VALIDACAO_001_1G_241412_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade jsonb_array_elements
+  Scripts/2025/241720/PJE_FLX_ANT_001_1G_241720_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/241720/PJE_FLX_ANT_VALIDACAO_001_1G_241720_atualzia_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/241956/PJE_FLX_ANT_02_1G_241956_ATUALIZA_PARAMETRO_MAPA_OPCOES.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/241956/PJE_FLX_ANT_VALIDACAO_02_1G_241956_ATUALIZA_PARAMETRO_MAPA_OPCOES.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:mapaOpcoes'
+  Scripts/2025/241956/PJE_FLX_POS_01_1G_241956_INSERT_DE_LABELS_NA_SEC.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/241956/PJE_FLX_POS_VALIDACAO_01_1G_241956_INSERT_DE_LABELS_NA_SEC.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade jsonb_array_elements
+  Scripts/2025/241957/PJE_FLX_ANT_001_1G_241957_update_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+    - consultar a entidade core.tb_parametro
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/241957/PJE_FLX_ANT_VALIDACAO_001_1G_241957_update_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/241958/PJE_FLX_ANT_001_1G_241958_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/241958/PJE_FLX_ANT_VALIDACAO_001_1G_241958_atualizacao_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/242286/PJE_FLX_POS_001_1G_242286_CRIA_LABELS_ALVARA.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/242286/PJE_FLX_POS_VALIDACAO_001_1G_242286_CRIA_LABELS_ALVARA.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/245043/PJE_FLX_ANT_001_2G_245043_criar_modelo_documento_relatorio_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_localizacao
+    - criar a entidade tb_tipo_modelo_documento
+    - criar a entidade core.tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:idmodelodocumento:padraopreminuta:sara:relatorio'
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/245043/PJE_FLX_ANT_VALIDACAO_001_2G_245043_criar_modelo_documento_relatorio_para_sara.sql.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/246617/PJE_FLX_ANT_001_2G_246617_criar_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/246617/PJE_FLX_ANT_002_2G_246617_criar_modelo_documento_padrao.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_tipo_modelo_documento
+    - criar a entidade core.tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:idmodelodocumento:padraopreminuta:sara'
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/246617/PJE_FLX_ANT_003_2G_246617_configurar_modelo_documento_decisao_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_tipo_modelo_documento
+    - consultar a entidade tb_tipo_modelo_documento
+    - criar a entidade core.tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade tb_modelo_documento
+    - alterar a entidade core.tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:idmodelodocumento:padraopreminuta:sara:decisao'
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/246617/PJE_FLX_ANT_004_2G_246617_configurar_modelo_documento_despacho_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_tipo_modelo_documento
+    - criar a entidade core.tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:idmodelodocumento:padraopreminuta:sara:despacho'
+    - alterar a entidade core.tb_parametro
+  Scripts/2025/246617/PJE_FLX_ANT_005_2G_246617_criar_parametro_habilita_sigiloso_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:integracao:sara:habilitado:para:sigilosos'
+    - criar o parÃ¢metro 'pje:integracao:sara:habilitado:para:sigilosos'
+  Scripts/2025/246617/PJE_FLX_ANT_006_2G_246617_ajustar_label_fluxo_sara.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/246617/PJE_FLX_ANT_VALIDACAO_001_2G_246617_criar_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/246617/PJE_FLX_ANT_VALIDACAO_002_2G_246617_criar_modelo_documento_padrao.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/246617/PJE_FLX_ANT_VALIDACAO_003_2G_246617_configurar_modelo_documento_decisao_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/246617/PJE_FLX_ANT_VALIDACAO_004_2G_246617_configurar_modelo_documento_despacho_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/246617/PJE_FLX_ANT_VALIDACAO_005_2G_246617_criar_parametro_habilita_sigiloso_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:integracao:sara:habilitado:para:sigilosos'
+  Scripts/2025/246617/PJE_FLX_ANT_VALIDACAO_006_2G_246617_ajustar_label_fluxo_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/248731/PJE_FLX_ANT_001_1G_248731_corrige_cejusc.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade tmp_proc_cejusc
+    - consultar a entidade tmp_proc_inst_idloc_wrong
+    - consultar a entidade jbpm_variableinstance
+    - excluir a entidade jbpm_variableinstance
+    - criar a entidade jbpm_variableinstance
+    - alterar a entidade tb_processo_instance
+  Scripts/2025/248731/PJE_FLX_ANT_VALIDACAO_001_1G_248731_corrige_cejusc.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade tmp_proc_cejusc
+    - consultar a entidade tmp_proc_inst_idloc_wrong
+    - consultar a entidade tmp_proc_inst_to_fix
+  Scripts/2025/251139/1G/PJE_FLX_ANT_001_1G_251139_atualiza_parametro_SQLExtensoesCejuscCombo.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_localizacao
+    - consultar o parÃ¢metro 'SQLExtensoesCejuscCombo'
+    - alterar o parÃ¢metro 'SQLExtensoesCejuscCombo'
+  Scripts/2025/251139/1G/PJE_FLX_ANT_VALIDACAO_001_1G_251139_atualiza_parametro_SQLExtensoesCejuscCombo.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_localizacao
+    - consultar o parÃ¢metro 'SQLExtensoesCejuscCombo'
+  Scripts/2025/251143/1G/PJE_FLX_ANT_001_1G_251143_atualiza_label_atencao.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_jbpm_variavel_label
+    - alterar a entidade tb_jbpm_variavel_label
+  Scripts/2025/251143/1G/PJE_FLX_ANT_VALIDACAO_001_1G_251143_atualiza_label_atencao.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/2025/251190/PJE_FLX_ANT_001_1G_251190_apaga_idLocalizacao_errado.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade jbpm_variableinstance
+    - excluir a entidade jbpm_variableinstance
+  Scripts/2025/251190/PJE_FLX_ANT_002_1G_251190_apaga_localizacao_proc_inst_indevido.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - alterar a entidade tb_processo_instance
+  Scripts/2025/251190/PJE_FLX_ANT_003_1G_251190_apaga_idLocalizacao_retornados.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade jbpm_variableinstance
+    - excluir a entidade jbpm_variableinstance
+  Scripts/2025/251190/PJE_FLX_ANT_004_1G_251190_corrige_variaveis.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade xx_jbpm_variableinstance_251190
+    - criar a entidade jbpm_variableinstance
+    - consultar a entidade jbpm_processinstance
+    - consultar a entidade tb_processo_instance
+    - alterar a entidade tb_processo_instance
+  Scripts/2025/251190/PJE_FLX_ANT_VALIDACAO_001_1G_251190_apaga_idLocalizacao_errado.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade tmp_proc_cejusc_at_sejud
+  Scripts/2025/251190/PJE_FLX_ANT_VALIDACAO_002_1G_251190_apaga_localizacao_proc_inst_indevido.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade tmp_proc_cejusc_at_sejud_already_on_cejusc
+  Scripts/2025/251190/PJE_FLX_ANT_VALIDACAO_003_1G_251190_apaga_idLocalizacao_retornados.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade jbpm_variableinstance
+  Scripts/2025/251190/PJE_FLX_ANT_VALIDACAO_004_1G_251190_corrige_variaveis.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade xx_jbpm_variableinstance_251190
+    - consultar a entidade jbpm_variableinstance
+    - consultar a entidade jbpm_processinstance
+    - consultar a entidade tmp_proc_cejusc_ato_proferido
+  Scripts/2025/258619/PJE_FLX_ANT_001_2G_258619_apga_fluxo_saida_ag_retorno_cortsup.sql -> 
+  Casos de Uso Identificados:
+    - excluir a entidade jbpm_variableinstance
+  Scripts/2025/258619/PJE_FLX_ANT_VALIDACAO_001_2G_258619_apga_fluxo_saida_ag_retorno_cortsup.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade jbpm_variableinstance
+  Scripts/2026/238922/PJE_FLX_ANT_001_1G_221645_criacao_labels_configurar_fluxos_paralelos.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/238922/PJE_FLX_ANT_VALIDACAO_001_1G_221645_criacao_labels_configurar_fluxos_paralelos.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/239157/PJE_FLX_ANT_001_1G_239157_criacao_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/239157/PJE_FLX_ANT_VALIDACAO_001_1G_239157_criacao_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/241709/PJE_FLX_POS_001_1G_241709_cria_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/241709/PJE_FLX_POS_VALIDACAO_001_1G_241709_cria_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade jsonb_array_elements
+  Scripts/2026/244094/PJE_FLX_ANT_001_1G_244094_cria_parametro_id_Mandado_IntimacaoMedidasProtetivas.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2026/244094/PJE_FLX_ANT_VALIDACAO_001_1G_244094_cria_parametro_id_Mandado_IntimacaoMedidasProtetivas.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2026/244097/PJE_FLX_ANT_001_1G_244097_atualiza_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/244548/PJE_FLX_ANT_001_1G_244548_criacao_de_parametro.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+  Scripts/2026/244548/PJE_FLX_ANT_VALIDACAO_001_1G_244548_criacao_de_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+  Scripts/2026/246071/PJE_FLX_ANT_001_1G_246071_cria_parametro_distribuicao.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - criar a entidade core.tb_parametro
+  Scripts/2026/246071/PJE_FLX_ANT_VALIDACAO_001_1G_246071_cria_parametro_distribuicao.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Scripts/2026/246075/PJE_FLX_POS_001_1G_246075_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/246075/PJE_FLX_POS_001_1G_VALIDACAO_246075_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2026/246077/PJE_FLX_ANT_001_1G_246077_cria_parametro_id_modelo_vistaAP.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - criar a entidade core.tb_parametro
+  Scripts/2026/246077/PJE_FLX_ANT_002_1G_246077_cria_parametro_competencia_Intima_AP.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - criar a entidade core.tb_parametro
+  Scripts/2026/246077/PJE_FLX_ANT_VALIDACAO_001_1G_246077_cria_parametro_id_modelo_vistaAP.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/2026/246077/PJE_FLX_ANT_VALIDACAO_002_1G_246077_cria_parametro_competencia_Intima_AP.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade tb_competencia
+  Scripts/2026/252107/PJE_FLX_ANT_001_2G_252107_atualiza_processos_legados.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade tb_processo_instance
+  Scripts/2026/252107/PJE_FLX_ANT_VALIDACAO_001_2G_252107_atualiza_processos_legados.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+  Scripts/2026/254970/PJE_FLX_ANT_001_1G_254970_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade tb_jbpm_variavel_label
+    - criar a entidade tb_jbpm_variavel_label
+  Scripts/2026/254970/PJE_FLX_ANT_002_1G_254970_cria_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:fluxos:utilizam:nova:audiencia'
+    - criar o parÃ¢metro 'pje:tjce:fluxo:fluxos:utilizam:nova:audiencia'
+  Scripts/2026/254970/PJE_FLX_ANT_VALIDACAO_001_1G_254970_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/2026/254970/PJE_FLX_ANT_VALIDACAO_002_1G_254970_cria_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:fluxos:utilizam:nova:audiencia'
+  Scripts/2026/255256/PJE_FLX_ANT_VALIDACAO_001_1G_255256_criacao_parametros_distribuicao_geral_processo.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2026/255428/PJE_FLX_ANT_001_1G_255428_cria_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+  Scripts/2026/255428/PJE_FLX_ANT_VALIDACAO_001_1G_255428_cria_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+  Scripts/2026/255700/1G/PJE_FLX_POS_001_1G_255700_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_jbpm_variavel_label
+    - alterar a entidade tb_jbpm_variavel_label
+  Scripts/2026/255700/1G/PJE_FLX_POS_VALIDACAO_001_1G_255700_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/2026/255700/2G/PJE_FLX_POS_001_2G_255700_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_jbpm_variavel_label
+    - alterar a entidade tb_jbpm_variavel_label
+  Scripts/2026/255700/2G/PJE_FLX_POS_VALIDACAO_001_2G_255700_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/2026/256772/2G/PJE_FLX_POS_001_2G_256772_atualiza_parametro_prepararIntimacaoPauta.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:fluxo:prepararIntimacaoPauta'
+    - alterar o parÃ¢metro 'GE-FIFPT'
+  Scripts/2026/256772/2G/PJE_FLX_POS_002_2G_256772_atualiza_label.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_jbpm_variavel_label
+    - alterar a entidade tb_jbpm_variavel_label
+  Scripts/2026/256772/2G/PJE_FLX_POS_VALIDACAO_001_2G_256772_atualiza_parametro_prepararIntimacaoPauta.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:fluxo:prepararIntimacaoPauta'
+  Scripts/2026/256772/2G/PJE_FLX_POS_VALIDACAO_002_2G_256772_atualiza_label.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C000.F011/PJE_DEV_ANT_000_1G_2G_000000_UPDATE_VERSAO_FLUXO.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C000.F011/PJE_FLX_ANT_001_1G_251139_atualiza_parametro_SQLExtensoesCejuscCombo.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_localizacao
+    - consultar o parÃ¢metro 'SQLExtensoesCejuscCombo'
+    - alterar o parÃ¢metro 'SQLExtensoesCejuscCombo'
+  Scripts/releases/C000.F011/PJE_FLX_ANT_002_1G_251143_atualiza_label_atencao.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_jbpm_variavel_label
+    - alterar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C000.F011/PJE_FLX_ANT_VALIDACAO_001_1G_251139_atualiza_parametro_SQLExtensoesCejuscCombo.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_localizacao
+    - consultar o parÃ¢metro 'SQLExtensoesCejuscCombo'
+  Scripts/releases/C000.F011/PJE_FLX_ANT_VALIDACAO_002_1G_251143_atualiza_label_atencao.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C000.F012/PJE_DEV_ANT_000_1G_000000_UPDATE_VERSAO_FLUXO.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C000.F012/PJE_FLX_POS_001_1G_255540_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_jbpm_variavel_label
+    - alterar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C000.F012/PJE_FLX_POS_002_1G_255540_ajuste_converter_minuta.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade jbpm_variableinstance
+    - alterar a entidade jbpm_variableinstance
+  Scripts/releases/C000.F012/PJE_FLX_POS_VALIDACAO_001_1G_255540_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C000.F012/PJE_FLX_POS_VALIDACAO_002_1G_255540_ajuste_converter_minuta.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade jbpm_variableinstance
+  Scripts/releases/C002.F013/PJE_DEV_ANT_000_1G_2G_000000_UPDATE_VERSAO_FLUXO.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C002.F013/PJE_FLX_POS_001_1G_255700_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_jbpm_variavel_label
+    - alterar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C002.F013/PJE_FLX_POS_002_2G_255700_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_jbpm_variavel_label
+    - alterar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C002.F013/PJE_FLX_POS_VALIDACAO_001_1G_255700_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C002.F013/PJE_FLX_POS_VALIDACAO_002_2G_255700_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C005.F014/PJE_DEV_ANT_000_1G_2G_000000_UPDATE_VERSAO_FLUXO.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_001_1G_248731_corrige_cejusc.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade tmp_proc_cejusc
+    - consultar a entidade tmp_proc_inst_idloc_wrong
+    - consultar a entidade jbpm_variableinstance
+    - excluir a entidade jbpm_variableinstance
+    - criar a entidade jbpm_variableinstance
+    - alterar a entidade tb_processo_instance
+  Scripts/releases/C005.F014/PJE_FLX_ANT_002_2G_246617_criar_labels.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/releases/C005.F014/PJE_FLX_ANT_003_2G_246617_criar_modelo_documento_padrao.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_tipo_modelo_documento
+    - criar a entidade core.tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:idmodelodocumento:padraopreminuta:sara'
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_004_2G_246617_configurar_modelo_documento_decisao_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade tb_tipo_modelo_documento
+    - consultar a entidade tb_tipo_modelo_documento
+    - criar a entidade core.tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade tb_modelo_documento
+    - alterar a entidade core.tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:idmodelodocumento:padraopreminuta:sara:decisao'
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_005_2G_246617_configurar_modelo_documento_despacho_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_tipo_modelo_documento
+    - criar a entidade core.tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:idmodelodocumento:padraopreminuta:sara:despacho'
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_006_2G_246617_criar_parametro_habilita_sigiloso_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:integracao:sara:habilitado:para:sigilosos'
+    - criar o parÃ¢metro 'pje:integracao:sara:habilitado:para:sigilosos'
+  Scripts/releases/C005.F014/PJE_FLX_ANT_008_2G_245043_criar_modelo_documento_relatorio_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_localizacao
+    - criar a entidade tb_tipo_modelo_documento
+    - criar a entidade core.tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:idmodelodocumento:padraopreminuta:sara:relatorio'
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_012_1G_254970_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade tb_jbpm_variavel_label
+    - criar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C005.F014/PJE_FLX_ANT_013_1G_254970_cria_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:fluxos:utilizam:nova:audiencia'
+    - criar o parÃ¢metro 'pje:tjce:fluxo:fluxos:utilizam:nova:audiencia'
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_001_1G_248731_corrige_cejusc.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade tmp_proc_cejusc
+    - consultar a entidade tmp_proc_inst_idloc_wrong
+    - consultar a entidade tmp_proc_inst_to_fix
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_002_2G_246617_criar_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_003_2G_246617_criar_modelo_documento_padrao.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_004_2G_246617_configurar_modelo_documento_decisao_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_005_2G_246617_configurar_modelo_documento_despacho_para_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_006_2G_246617_criar_parametro_habilita_sigiloso_sara.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:integracao:sara:habilitado:para:sigilosos'
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_008_2G_245043_criar_modelo_documento_relatorio_para_sara.sql.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_modelo_documento
+    - consultar a entidade core.tb_parametro
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_012_1G_254970_atualiza_labels.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_jbpm_variavel_label
+  Scripts/releases/C005.F014/PJE_FLX_ANT_VALIDACAO_013_1G_254970_cria_parametro.sql -> 
+  Casos de Uso Identificados:
+    - consultar o parÃ¢metro 'pje:tjce:fluxo:fluxos:utilizam:nova:audiencia'
+  Scripts/releases/C008.F015/PJE_DEV_ANT_000_1G_2G_000000_UPDATE_VERSAO_FLUXO.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/releases/C008.F015/PJE_FLX_ANT_001_1G_251190_apaga_idLocalizacao_errado.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade jbpm_variableinstance
+    - excluir a entidade jbpm_variableinstance
+  Scripts/releases/C008.F015/PJE_FLX_ANT_002_1G_251190_apaga_localizacao_proc_inst_indevido.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - alterar a entidade tb_processo_instance
+  Scripts/releases/C008.F015/PJE_FLX_ANT_003_1G_251190_apaga_idLocalizacao_retornados.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade jbpm_variableinstance
+    - excluir a entidade jbpm_variableinstance
+  Scripts/releases/C008.F015/PJE_FLX_ANT_004_2G_258619_apga_fluxo_saida_ag_retorno_cortsup.sql -> 
+  Casos de Uso Identificados:
+    - excluir a entidade jbpm_variableinstance
+  Scripts/releases/C008.F015/PJE_FLX_ANT_005_2G_166992_criar_labels_alterar_parametros_expedir_alvara_bankjus.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+    - criar o parÃ¢metro 'pje:tjce:fluxo:bankjus:habilitar:gerarDocumentoCancelamento'
+    - consultar a entidade core.tb_parametro
+    - alterar a entidade core.tb_parametro
+    - criar a entidade tb_modelo_documento
+    - criar a entidade tb_modelo_doc_proc_local
+    - consultar a entidade core.tb_modelo_documento
+    - criar o parÃ¢metro 'pje:tjce:fluxo:bankjus:idModeloDocumento:alvaraNaoGerado'
+    - criar o parÃ¢metro 'pje:tjce:fluxo:bankjus:idTipoDocumento:alvaraNaoGerado'
+  Scripts/releases/C008.F015/PJE_FLX_ANT_006_1G_251190_corrige_variaveis.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade xx_jbpm_variableinstance_251190
+    - criar a entidade jbpm_variableinstance
+    - consultar a entidade jbpm_processinstance
+    - consultar a entidade tb_processo_instance
+    - alterar a entidade tb_processo_instance
+  Scripts/releases/C008.F015/PJE_FLX_ANT_007_2G_252107_atualiza_processos_legados.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade tb_processo_instance
+  Scripts/releases/C008.F015/PJE_FLX_ANT_VALIDACAO_001_1G_251190_apaga_idLocalizacao_errado.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade tmp_proc_cejusc_at_sejud
+  Scripts/releases/C008.F015/PJE_FLX_ANT_VALIDACAO_002_1G_251190_apaga_localizacao_proc_inst_indevido.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade tmp_proc_cejusc_at_sejud_already_on_cejusc
+  Scripts/releases/C008.F015/PJE_FLX_ANT_VALIDACAO_003_1G_251190_apaga_idLocalizacao_retornados.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+    - consultar a entidade jbpm_variableinstance
+  Scripts/releases/C008.F015/PJE_FLX_ANT_VALIDACAO_004_2G_258619_apga_fluxo_saida_ag_retorno_cortsup.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade jbpm_variableinstance
+  Scripts/releases/C008.F015/PJE_FLX_ANT_VALIDACAO_005_2G_166922_criar_labels_alterar_parametros_expedir_alvara_bankjus.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade core.tb_modelo_documento
+  Scripts/releases/C008.F015/PJE_FLX_ANT_VALIDACAO_006_1G_251190_corrige_variaveis.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade xx_jbpm_variableinstance_251190
+    - consultar a entidade jbpm_variableinstance
+    - consultar a entidade jbpm_processinstance
+    - consultar a entidade tmp_proc_cejusc_ato_proferido
+  Scripts/releases/C008.F015/PJE_FLX_ANT_VALIDACAO_007_2G_252107_atualiza_processos_legados.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_processo_instance
+  Total de Itens do Commit: 2201
+
+
+
+Mensagem: [#255256] Correção de conflitos de tarefas do bloco 2.4
+Commit: b0f34b707f305c820cac2628490da79fb729725c - Data do commit: 13-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] corrigindo ação no  fluxo
+Commit: 2b49d5dd42293f7b29171027357d38b1da25ddd9 - Data do commit: 12-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#248091] Correções nos fluxos de expedição de ofício
+Commit: 3d498cd8fbbafeb6054bf60b056340f5c2fa2951 - Data do commit: 12-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: Merge branch 'features/#260705_expansao_bloco_2.4_dignidade_sexual_menores' of https://git.tjce.jus.br/sistemas/PJE into features/#260705_expansao_bloco_2.4_dignidade_sexual_menores
+Commit: 9832394820e440bd41a1666bde2d4ca551320ead - Data do commit: 11-03-2026
+  Scripts/2025/238747/PJE_FLX_ANT_001_1G_238747_CRIA_PARAMETROS_PARA_DISTRIBUICAO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - criar a entidade core.tb_parametro
+  Scripts/2025/238747/PJE_FLX_ANT_VALIDACAO_001_1G_238747_CRIA_PARAMETROS_PARA_DISTRIBUICAO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/244533/PJE_FLX_ANT_001_1G_244533_CRIAR_LABELS_PARA_NOVO_PAJ.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/244533/PJE_FLX_ANT_VALIDACAO_001_1G_244533_CRIAR_LABELS_PARA_NOVO_PAJ.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade jsonb_array_elements
+  Scripts/2025/244543/PJE_FLX_ANT_001_1G_244543_criacao_labels_configurar_parametros.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/244543/PJE_FLX_ANT_VALIDACAO_001_1G_244543_criacao_labels_configurar_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+    - consultar a entidade core.tb_parametro
+  Scripts/2026/246843/PJE_FLX_ANT_VALIDACAO_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Scripts/2026/249800/PJE_FLX_ANT_001_1G_249800_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+  Scripts/2026/249800/PJE_FLX_ANT_VALIDACAO_001_1G_249800_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Total de Itens do Commit: 3459
+
+
+
+Mensagem: [#248091] Commit inicial para a criação dos rascunhos das classes
+Commit: 87e678fbb335e588b52a74a99b71ff39d44a5328 - Data do commit: 11-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] ajuste de script
+Commit: d09711de55de8c302100a56644c218d922a30f17 - Data do commit: 10-03-2026
+  Scripts/2026/249800/PJE_FLX_ANT_001_1G_249800_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 0
+
+
+
+Mensagem: Merge branch 'features/#260705_bloco_24_crianca_adolecente' into 'ambientes/projeto-hml-2609'
+Commit: 1bf1be4e4bdf302b786511cffe9ef376d7b02968 - Data do commit: 10-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_VALIDACAO_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 0
+
+
+
+Mensagem: [#255426] declarando variável iteração da validação
+Commit: 054857230677b72b8fc46dcc83b17237114ae4df - Data do commit: 10-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_VALIDACAO_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 0
+
+
+
+Mensagem: Merge branch 'features/#260705_bloco_24_crianca_adolecente' into 'ambientes/projeto-hml-2609'
+Commit: c662680ea98979f445300b93a477a02e56f4dada - Data do commit: 10-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 0
+
+
+
+Mensagem: [#255426] declarando variável iteração
+Commit: aa523592a02279f8e433b2fb3fdfad8bb3aa9bbc - Data do commit: 10-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 0
+
+
+
+Mensagem: [#255426] ajuste em transição com problema
+Commit: 7b76a33c5724f822429f401a6e54bfab66c134e0 - Data do commit: 10-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] ajuste em transição com problema
+Commit: ceb3db2566213c7390a0a56bba2d3c55b488634b - Data do commit: 10-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#255426] concluindo o refactoring e integrando a distribuição dos crimes contra criança e adolescente
+Commit: 0df32bc0887ff4d70a5e98037250936662b840a2 - Data do commit: 09-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_parametro
+    - consultar a entidade core.tb_parametro
+    - alterar a entidade core.tb_parametro
+  Scripts/2026/246843/PJE_FLX_ANT_VALIDACAO_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+  Total de Itens do Commit: 33
+
+
+
+Mensagem: [#255426] definindo configurações para entrar na distribuição da competencia de crime contra a dignidade sexual de menores
+Commit: 6ff2808f1eabfb8f895b3f28ccbf54e3226a15d1 - Data do commit: 09-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: Merge branch 'ambientes/projeto-hml-2609' into features/#260705_bloco_24_crianca_adolecente
+Commit: e024470d8ed35408c14530a6c84953c76434d217 - Data do commit: 09-03-2026
+  Scripts/2025/238747/PJE_FLX_ANT_001_1G_238747_CRIA_PARAMETROS_PARA_DISTRIBUICAO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - criar a entidade core.tb_parametro
+  Scripts/2025/238747/PJE_FLX_ANT_VALIDACAO_001_1G_238747_CRIA_PARAMETROS_PARA_DISTRIBUICAO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/244533/PJE_FLX_ANT_001_1G_244533_CRIAR_LABELS_PARA_NOVO_PAJ.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/244533/PJE_FLX_ANT_VALIDACAO_001_1G_244533_CRIAR_LABELS_PARA_NOVO_PAJ.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade jsonb_array_elements
+  Scripts/2026/246840/PJE_FLX_ANT_001_1G_246840 _CRIA_PARAMETROS_PARA_DISTRIBUICAO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - criar a entidade core.tb_parametro
+    - consultar a entidade tb_modelo_documento
+  Scripts/2026/246840/PJE_FLX_ANT_VALIDACAO_001_1G_246840 _CRIA_PARAMETROS_PARA_DISTRIBUICAO.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Total de Itens do Commit: 3410
+
+
+
+Mensagem: [#255426] Alterações iniciais para entrar na distribuição da competencia de crime contra a dignidade sexual de menores
+Commit: 0d962fdb31253bcf6ef39c2443c3caf2c250da98 - Data do commit: 09-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#246843] Ajuste de nomenclatura dos arquivos de script
+Commit: 1542bf66f153033c55ed1d4ab634eedb19697dfd - Data do commit: 06-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_VALIDACAO_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2026/249800/PJE_FLX_ANT_VALIDACAO_001_1G_249800_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 0
+
+
+
+Mensagem: Merge branch 'feature/#166992_expedicao_alvara_eletronico_integracao_bankjus' into 'releases/rc_bastia_20260307'
+Commit: 55743f7b3c3861ceede5704f14b0411be7c197db - Data do commit: 06-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#166992] Ajustes para atualização do status do alvará e encaminhar o alvara para o banco
+Commit: bde2d849124becec2c3a7d77bc218749a0e6098e - Data do commit: 06-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: Merge branch 'feature/#166992_expedicao_alvara_eletronico_integracao_bankjus' into 'releases/rc_bastia_20260307'
+Commit: beb2ed86b0e17e26954b44add3ebad1502a15997 - Data do commit: 06-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#246843] Ajuste de nomenclatura dos arquivos de script
+Commit: a28cf7e4dd767c911a29e61c8a512fd2e2ed8d3d - Data do commit: 05-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_VALIDACAO_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2026/249800/PJE_FLX_ANT_001_1G_VALIDACAO_249800_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 0
+
+
+
+Mensagem: [#166992] Ajustes para atualização do status do alvará
+Commit: 16af8e652d0a3a31e1fd443fc7e468bd94082d6f - Data do commit: 05-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#249800] Adptação do fluxo para competência de "Delitos de Tráfico de Drogas"
+Commit: 3f4e88334c9139acfe8d776c399c1d75b2291e3e - Data do commit: 04-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/2026/249800/PJE_FLX_ANT_001_1G_249800_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+    - consultar a entidade core.tb_parametro
+    - consultar a entidade tb_classe_judicial
+  Total de Itens do Commit: 17
+
+
+
+Mensagem: [#246843] Ajuste de nomenclatura
+Commit: 144c5d75879912fed4122ee8cda2269818ccf6f6 - Data do commit: 04-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_VALIDACAO_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_parametro
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - alterar a entidade core.tb_parametro
+  Scripts/2026/249800/PJE_FLX_ANT_001_1G_249800_VALIDACAO_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Scripts/2026/249800/PJE_FLX_ANT_001_1G_249800_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+  Total de Itens do Commit: 7
+
+
+
+Mensagem: merge de atualização com a branch projeto-hml
+Commit: 06e78dbf4075fd95a0a7d089c1950c6e3bd5f321 - Data do commit: 04-03-2026
+  Scripts/2025/244543/PJE_FLX_ANT_001_1G_244543_criacao_labels_configurar_parametros.sql -> 
+  Casos de Uso Identificados:
+    - criar a entidade core.tb_jbpm_variavel_label
+    - alterar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/244543/PJE_FLX_ANT_VALIDACAO_001_1G_244543_criacao_labels_configurar_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade core.tb_jbpm_variavel_label
+  Scripts/2025/244544/PJE_FLX_POS_001_1G_244544_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2025/244544/PJE_FLX_POS_VALIDACAO_001_1G_244544_configuracao_parametro_mapaOpcoes_e_label.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 115
+
+
+
+Mensagem: [#166992] Ajustes na visibilidade
+Commit: 0e67c651bfc3843e7351b6e9ed36c4fe9b8c544f - Data do commit: 03-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#246843] Commit final com a criação do fluxo de distribuição
+Commit: aebe4ee46d3c5e6cbc7cb2a0f813c7e671bb354b - Data do commit: 03-03-2026
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_VALIDACAO_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Scripts/2026/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    (Nenhum caso de uso SQL mapeado)
+  Total de Itens do Commit: 37
+
+
+
+Mensagem: [#166992] Ajustes no hub de direcionamento de tarefas
+Commit: 19722a2d0adb6437cdd58ebb4821df55a230a03d - Data do commit: 03-03-2026
+(Commit sem alteração de scritps SQL)
+
+
+
+Mensagem: [#246843] Criação dos parâmetros e ajustes iniciais
+Commit: 689b6879cc1bf963f5bf1096b50791ddf86a8912 - Data do commit: 03-03-2026
+  Scripts/2025/246843/PJE_FLX_ANT_001_1G_246843_VALIDACAO_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - consultar a entidade core.tb_parametro
+  Scripts/2025/246843/PJE_FLX_ANT_001_1G_246843_criacao_parametros.sql -> 
+  Casos de Uso Identificados:
+    - consultar a entidade tb_competencia
+    - alterar a entidade core.tb_parametro
+    - criar a entidade core.tb_parametro
+    - consultar a entidade core.tb_parametro
+  Total de Itens do Commit: 9
+
+
+
