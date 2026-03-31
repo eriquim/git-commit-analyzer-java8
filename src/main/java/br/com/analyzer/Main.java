@@ -31,7 +31,7 @@ public class Main {
     
     private static void processamentoFluxos(List<Commit> commits) {
     	String pattern = "dd-MM-yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern)
         System.out.println("----------------------------------------- Processamento de Fluxos -----------------------------------------------");
 
         for (Commit c : commits) {
